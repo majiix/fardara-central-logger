@@ -1,0 +1,356 @@
+/**
+ * Central Logger Admin Styles
+ */
+.cl-wrap {
+    margin-top: 20px;
+}
+
+.cl-main-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.cl-main-title .dashicons {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: #2271b1;
+}
+
+.cl-version-tag {
+    font-size: 12px;
+    background: #f0f0f1;
+    color: #646970;
+    border: 1px solid #c3c4c7;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.cl-nav-tabs {
+    margin-bottom: 20px;
+}
+
+.cl-nav-tabs .dashicons {
+    margin-right: 4px;
+    vertical-align: text-top;
+}
+
+/* Toolbar & Export */
+.cl-logs-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+}
+
+.cl-export-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.cl-export-buttons .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+}
+
+/* Table Filters */
+.cl-table-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.cl-table-filters select,
+.cl-table-filters input[type="date"] {
+    max-width: 180px;
+    height: 30px;
+    font-size: 13px;
+}
+
+/* Badges */
+.cl-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+}
+
+.cl-badge-plugin {
+    background: #f0f6fc;
+    color: #0969da;
+    border: 1px solid #d0d7de;
+    text-decoration: none;
+    text-transform: none;
+    font-weight: 500;
+}
+.cl-badge-plugin:hover {
+    background: #0969da;
+    color: #ffffff;
+}
+
+.cl-badge-category {
+    background: #f6f8fa;
+    color: #57606a;
+    border: 1px solid #d0d7de;
+    text-transform: lowercase;
+    font-family: monospace;
+    font-size: 11px;
+}
+
+/* Severity Level Colors */
+.cl-level-debug {
+    background: #f0f0f1;
+    color: #646970;
+    border: 1px solid #c3c4c7;
+}
+
+.cl-level-info {
+    background: #e7f5fe;
+    color: #0073aa;
+    border: 1px solid #bfe3fc;
+}
+
+.cl-level-warning {
+    background: #fff8e5;
+    color: #996800;
+    border: 1px solid #ffe399;
+}
+
+.cl-level-error {
+    background: #fcf0f0;
+    color: #d63638;
+    border: 1px solid #f8c9ca;
+}
+
+.cl-level-critical {
+    background: #8b0000;
+    color: #ffffff;
+    border: 1px solid #5a0000;
+    font-weight: 700;
+}
+
+.cl-guest-user {
+    color: #8c8f94;
+    font-style: italic;
+}
+
+.cl-empty-context {
+    color: #c3c4c7;
+}
+
+.cl-message-preview {
+    word-break: break-word;
+}
+
+.cl-btn-toggle-msg {
+    padding: 0;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Settings Cards */
+.cl-settings-card {
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+}
+
+.cl-settings-card h2 {
+    margin-top: 0;
+    margin-bottom: 6px;
+    font-size: 16px;
+    border-bottom: 1px solid #f0f0f1;
+    padding-bottom: 10px;
+}
+
+.cl-threshold-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.cl-radio-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.cl-level-code {
+    color: #646970;
+}
+
+.cl-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.cl-category-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.cl-category-card:hover {
+    border-color: #2271b1;
+    background: #ffffff;
+}
+
+.cl-category-card input[type="checkbox"] {
+    margin-top: 3px;
+}
+
+.cl-category-info strong {
+    display: block;
+    font-size: 13px;
+    color: #1d2327;
+}
+
+.cl-category-key {
+    display: inline-block;
+    margin: 2px 0 4px;
+}
+
+.cl-category-key code {
+    font-size: 11px;
+    background: #f0f0f1;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.cl-category-info p {
+    margin: 0;
+    font-size: 12px;
+    color: #646970;
+    line-height: 1.4;
+}
+
+.cl-checkbox-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 8px;
+}
+
+/* Modal Drawer for JSON inspection */
+.cl-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    z-index: 100000;
+}
+
+.cl-modal.is-open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cl-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+}
+
+.cl-modal-card {
+    position: relative;
+    width: 90%;
+    max-width: 720px;
+    max-height: 85vh;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.cl-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: #f6f7f7;
+    border-bottom: 1px solid #dcdcde;
+}
+
+.cl-modal-header h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.cl-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #646970;
+    line-height: 1;
+    padding: 0 4px;
+}
+
+.cl-modal-close:hover {
+    color: #d63638;
+}
+
+.cl-modal-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    flex: 1;
+}
+
+.cl-modal-body pre {
+    margin: 0;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.cl-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 20px;
+    background: #f6f7f7;
+    border-top: 1px solid #dcdcde;
+}
