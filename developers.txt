@@ -10,14 +10,14 @@ Target Audience: Plugin Developers, Systems Integrators, AI Coding Agents
 1. OVERVIEW & INTEGRATION PHILOSOPHY
 --------------------------------------------------------------------------------
 
-Fardara Central Logger (`fardara-central-logger`) is a standalone WordPress
+Fardara Central Logger (ardara-central-logger) is a standalone WordPress
 logging engine designed to consolidate logs across a multi-plugin ecosystem.
 
 Integration Principles:
 1. Zero Runtime Dependencies: Central Logger does not require Composer packages
    in client plugins.
 2. Defensive Integration: Client plugins must never crash or throw errors if
-   CentralLogger is disabled, uninstalled, or loading later in the execution
+   Central Logger is disabled, uninstalled, or loading later in the execution
    sequence.
 3. Two-Dimensional Scoping: Every log event has a Severity Level and an Event
    Category. Both can be configured globally or overridden per-plugin.
@@ -81,7 +81,7 @@ if (function_exists('central_logger_log')) {
 }
 
 Function: central_logger_should_log()
------------------------------------
+-------------------------------------
 Pre-checks whether a log entry would be recorded given active settings.
 
 Signature:
@@ -100,7 +100,7 @@ Return Value:
 - (bool): True if an entry with this level and category would be accepted.
 
 Example:
-if (function_existsS('central_logger_should_log') && central_logger_should_log('fardara-reports', 'debug', 'performance')) {
+if (function_exists('central_logger_should_log') && central_logger_should_log('fardara-reports', 'debug', 'performance')) {
     $context = [
         'query_count' => get_num_queries(),
         'memory_peak' => memory_get_peak_usage(true),
@@ -111,7 +111,7 @@ if (function_existsS('central_logger_should_log') && central_logger_should_log('
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 2.2 Object-Oriented API (\CentralLogger\Logger)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Class: \CentralLogger\Logger
 ----------------------------
@@ -133,7 +133,7 @@ Instance Methods:
 - log(string $level, string $message, array $context = [], ?string $category = null): bool
 
 Example:
-if (class_exists('\CentralLogger\Logger')) {
+if (class_exists('CentralLogger\\Logger')) {
     $logger = new \CentralLogger\Logger('fardara-auth', 'auth');
 
     // Uses default category 'auth'
@@ -148,9 +148,9 @@ if (class_exists('\CentralLogger\Logger')) {
 3. SEVERITY LEVELS & EVENT CATEGORIES REFERENCE
 --------------------------------------------------------------------------------
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 3.1 Severity Levels (Ascending Hierarchy)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. 'debug' (Weight: 100)
    Verbose diagnostic data, internal step-by-step execution traces, SQL query
@@ -172,12 +172,180 @@ Threshold Matching Rule:
 A log entry is accepted if:
   LogLevel::getWeight($entryLevel) >= LogLevel::getWeight($activeThreshold)
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 3.2 Event Categories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Slug           Label                 Typical Usage
--------------- -------------------- -----------------------------------------
+-------------- --------------------- -------------------------------------------
 'system'       System & Lifecycle    Plugin bootstrap, activation, cron runs,
-                                    cache invalidation, DB migrations.
-'E‘µ¥¸œ€€€€€€€‘µ¥¸=Á•É…Ñ¥½¹Ì€€€€€M•ÑÑ¥¹œÕÁ‘…Ñ•Ì°µ…¹Õ…°Íå¹ŒÑÉ¥•ÉÌ°4(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€‘…Ñ„•áÁ½ÉÐ½¥µÁ½ÉÐ‰äÍÑ…™˜¸4(ÕÍ•É}…Ñ¥½¸œ€UÍ•ÈÑ¥½¹Ì€€€€€€€€€ÕÍÑ½µ•ÈÁÉ½™¥±”•‘¥ÑÌ°…ÉÐÕÁ‘…Ñ•Ì°½É‘•È4(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€ÍÕ‰µ¥ÍÍ¥½¹Ì°…½Õ¹Ð¡…¹•Ì¸4(•ÍÑ}…Ñ¥½¸œÕ•ÍÐÑ¥½¹Ì€€€€€€€€¹½¹åµ½ÕÌÙ¥Í¥Ñ½È½Á•É…Ñ¥½¹Ì°ÁÕ‰±¥Œ™½É´4(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€ÍÕ‰µ¥ÍÍ¥½¹Ì°¡•­½ÕÐÍÑ•ÁÌ¸4(…ÕÑ œ€€€€€€€€ÕÑ¡•¹Ñ¥…Ñ¥½¸€€€€€€€1½¥¹Ì°±½½ÕÑÌ°Á…ÍÍÝ½ÉÉ•Í•ÑÌ°Ñ½­•¸4(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€•¹•É…Ñ¥½¸°€ÉÙ…±¥‘…Ñ¥½¸¸4(Í•ÕÉ¥Ñäœ€€€€M•ÕÉ¥Ñä€˜•ÍÌ€€€€9½¹”Ù…±¥‘…Ñ¥½¸™…¥±ÕÉ•Ì°™½É‰¥‘‘•¸…•ÍÌ4(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€…ÑÑ•µÁÑÌ°…Á…‰¥±¥Ñä¡•­ÌÉ•©•Ñ•¸4(¥¹Ñ•É…Ñ¥½¸œ€Q¡¥ÉµA…ÉÑä€¼A%Ì€€€áÑ•É¹…°IMPA$É•ÅÕ•ÍÑÌ°Ý•‰¡½½­Ì°4(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€Á…åµ•¹Ð…Ñ•Ý…åÌ°M5LÁÉ½Ù¥‘•ÉÌ¸4(Á•É™½Éµ…¹”œ€A•É™½Éµ…¹”€˜AÉ½™¥°€á•ÕÑ¥½¸‘ÕÉ…Ñ¥½¸‰•¹¡µ…É­Ì°ÅÕ•Éä½Õ¹Ð4(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€µ½¹¥Ñ½ÉÌ°µ•µ½Éä½¹ÍÕµÁÑ¥½¸ÍÁ¥­•Ì¸4(4(´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´4(Ð¸=9QaPQ°1%9P%@€˜AI%YdAI=QQ%=84(´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´4(4)½¹Ñ•áÐ‘…Ñ„¥ÌÁ…ÍÍ•…Ì…¸…ÍÍ½¥…Ñ¥Ù”…ÉÉ…ä…¹ÍÑ½É•…Ì)M=8¥¸Ñ¡”4)‘…Ñ…‰…Í”¸4(4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(Ð¸ÄÕÑ½µ…Ñ¥Œ±¥•¹Ð%@…ÁÑÕÉ”4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(4)%˜Ñ¡”…±±¥¹œÁ±Õ¥¸‘½•Ì¹½Ð•áÁ±¥¥Ñ±äÁÉ½Ù¥‘”…¸€¥Àœ½È€±¥•¹Ñ}¥Àœ­•ä4)¥¸Ñ¡”€‘½¹Ñ•áÐ…ÉÉ…ä°•¹ÑÉ…°1½•È…ÕÑ½µ…Ñ¥…±±ä‘•Ñ•ÑÌ…¹…ÑÑ…¡•Ì4)Ñ¡”±¥•¹Ð%@…‘‘É•ÍÌÕÍ¥¹œÑ¡”™½±±½Ý¥¹œÁÉ¥½É¥Ñä¡•…‘•ÉÌè4(Ä¸!QQA}}=99Q%9}%@€¡±½Õ‘™±…É”¤4(È¸!QQA}a}=I]I}=H€¡AI=ad€¼1½…	…±…¹•È€´™¥ÉÍÐÙ…±¥%@•áÑÉ…Ñ•¤4(Ì¸!QQA}a}I1}%@4(Ð¸!QQA}1%9Q}%@4(Ô¸I5=Q}H4(4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(Ð¸ÈÕÑ½µ…Ñ¥ŒA%$€˜É•‘•¹Ñ¥…°MÉÕ‰‰¥¹œ4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(4)•¹ÑÉ…°1½•È…ÕÑ½µ…Ñ¥…±±äÍÉÕ‰Ì½¹Ñ•áÐ‘…Ñ„è4(Ä¸M•¹Í¥Ñ¥Ù”-•äI•‘…Ñ¥½¸è4(€€¹ä½¹Ñ•áÐ­•äµ…Ñ¡¥¹œÍ•¹Í¥Ñ¥Ù”Á…ÑÑ•É¹Ì¥ÌÉ•Á±…•Ý¥Ñ €mIQtœ¸4(€€AÉ½Ñ•Ñ•­•åÌ¥¹±Õ‘”è4(€€€´Á…ÍÍÝ½É°Á…ÍÌ°ÁÝ°Í•É•Ð°Ñ½­•¸°…Á¥}­•ä°…Á¥­•ä°…•ÍÍ}Ñ½­•¸°4(€€€€…ÕÑ¡}Ñ½­•¸°ÁÉ¥Ù…Ñ•}­•ä°…ÕÑ¡½É¥é…Ñ¥½¸°½½­¥”°Í•ÍÍ¥½¹}¥°…É‘}¹Õµ‰•È°4(€€€€ÙØ°ÙŒ°ÍÍ¸°Á¥¸4(È¸É•‘¥Ð…É9Õµ‰•ÉÌè4(€€€ÄÌÑ¼€Ää‘¥¥ÐÍ•ÅÕ•¹•Ì™½Éµ…ÑÑ•…Ì…É¹Õµ‰•ÉÌ…É”É•Á±…•Ý¥Ñ 4(€€€mI}IQtœ¸4(Ì¸µ…¥°5…Í­¥¹œè4(€€µ…¥°…‘‘É•ÍÍ•Ì¥¸Ù…±Õ•Ì…É”µ…Í­•€¡”¹œ¸€¨« ©••á…µÁ±”¹½´œ¤¸4(Ð¸%@‘‘É•ÍÌ¹½¹åµ¥é…Ñ¥½¸è4(€€%AØÐ…‘‘É•ÍÍ•Ì¡…Ù”Ñ¡•¥È±…ÍÐ½Ñ•Ðé•É½•€¡”¹œ¸€œÄäÈ¸ÄØà¸Ä¸Àœ¤Ý¡•¸4(€€€‰AÉ¥Ù…ä€˜…Ñ„5…Í­¥¹œˆ¥Ì•¹…‰±•¥¸M•ÑÑ¥¹Ì¸4(€€%AØØ…‘‘É•ÍÍ•Ì¡…Ù”Ñ¡•¥È±…ÍÐ€àÀ‰¥ÑÌé•É½•¸4(4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(Ð¸ÌáÑ•¹Í¥‰¥±¥Ñä€¡¥±Ñ•È!½½¬¤4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(4)•Ù•±½Á•ÉÌ…¸É•¥ÍÑ•È…‘‘¥Ñ¥½¹…°Í•¹Í¥Ñ¥Ù”­•äÁ…ÑÑ•É¹ÌÙ¥„]½É‘AÉ•ÍÌ™¥±Ñ•Èè4(4)…‘‘}™¥±Ñ•È •¹ÑÉ…±}±½•É}Í•¹Í¥Ñ¥Ù•}­•å}Á…ÑÑ•É¹Ìœ°™Õ¹Ñ¥½¸€¡…ÉÉ…ä€‘Á…ÑÑ•É¹Ì¤è…ÉÉ…äì4(€€€€‘Á…ÑÑ•É¹Ímt€ô€µ•É¡…¹Ñ}ÁÉ¥Ù…Ñ•}­•äœì4(€€€€‘Á…ÑÑ•É¹Ímt€ô€ÍµÍ}…Ñ•Ý…å}Í•É•Ðœì4(€€€É•ÑÕÉ¸€‘Á…ÑÑ•É¹Ìì4)ô¤ì4(4(´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´4(Ô¸I=559%9QIQ%=8AQQI9L4(´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´4(4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4)A…ÑÑ•É¸èÉ½Àµ¥¸QÉ…¥Ð™½È=‰©•Ðµ=É¥•¹Ñ•A±Õ¥¹Ì4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(4)½ÁäÑ¡¥ÌÑÉ…¥Ð¥¹Ñ¼å½ÕÈÁ±Õ¥¸Ñ¼ÁÉ½Ù¥‘”ÑÉ…¹ÍÁ…É•¹Ð±½¥¹œ…É½ÍÌ…±°4)å½ÕÈÍ•ÉÙ¥”±…ÍÍ•Ìè4(4(ðýÁ¡À4)¹…µ•ÍÁ…”5åA±Õ¥¹qQÉ…¥ÑÌì4(4)ÑÉ…¥Ð!…Í•¹ÑÉ…±1½•È4)ì4(€€€€¼¨¨4(€€€€€¨1½œ„µ•ÍÍ…”Ù¥„•¹ÑÉ…°1½•È½È™…±±‰…¬Ñ¼]@•ÉÉ½É}±½œ¥¸‘•‰Õœµ½‘”¸4(€€€€€¨4(€€€€€¨Á…É…´ÍÑÉ¥¹œ€‘±•Ù•°M•Ù•É¥Ñä±•Ù•°€ ‘•‰Õœœ°€¥¹™¼œ°€Ý…É¹¥¹œœ°€•ÉÉ½Èœ°€É¥Ñ¥…°œ¤¸4(€€€€€¨Á…É…´ÍÑÉ¥¹œ€‘µ•ÍÍ…”•ÍÉ¥ÁÑ¥Ù”±½œÑ•áÐ¸4(€€€€€¨Á…É…´…ÉÉ…äñÍÑÉ¥¹œ°µ¥á•ø€‘½¹Ñ•áÐMÑÉÕÑÕÉ•µ•Ñ…‘…Ñ„¸4(€€€€€¨Á…É…´ÍÑÉ¥¹œ€‘…Ñ•½Éä…Ñ•½ÉäÍ±Õœ¸4(€€€€€¨¼4(€€€ÁÉ½Ñ•Ñ•™Õ¹Ñ¥½¸±½œ 4(€€€€€€€ÍÑÉ¥¹œ€‘±•Ù•°°4(€€€€€€€ÍÑÉ¥¹œ€‘µ•ÍÍ…”°4(€€€€€€€…ÉÉ…ä€‘½¹Ñ•áÐ€ômt°4(€€€€€€€ÍÑÉ¥¹œ€‘…Ñ•½Éä€ô€ÍåÍÑ•´œ4(€€€€¤èÙ½¥ì4(€€€€€€€€‘Á±Õ¥¹M±Õœ€ô€µäµÁ±Õ¥¸µÍ±Õœœì4(4(€€€€€€€¥˜€¡™Õ¹Ñ¥½¹}•á¥ÍÑÌ •¹ÑÉ…±}±½•É}±½œœ¤¤ì4(€€€€€€€€€€€•¹ÑÉ…±}±½•É}±½œ ‘Á±Õ¥¹M±Õœ°€‘±•Ù•°°€‘µ•ÍÍ…”°€‘½¹Ñ•áÐ°€‘…Ñ•½Éä¤ì4(€€€€€€€€€€€É•ÑÕÉ¸ì4(€€€€€€€ô4(4(€€€€€€€€¼¼…±±‰…¬Ý¡•¸•¹ÑÉ…°1½•È¥Ì¥¹…Ñ¥Ù”4(€€€€€€€¥˜€¡‘•™¥¹• ]A}	Uœ¤€˜˜]A}	U¤ì4(€€€€€€€€€€€€‘™½Éµ…ÑÑ•‘½¹Ñ•áÐ€ô€…•µÁÑä ‘½¹Ñ•áÐ¤€ü€œ€œ€¸ÝÁ}©Í½¹}•¹½‘” ‘½¹Ñ•áÐ¤€è€œœì4(€€€€€€€€€€€•ÉÉ½É}±½œ¡ÍÁÉ¥¹Ñ˜ 4(€€€€€€€€€€€€€€€€l•Íul•Íul•Ít€•Ì•Ìœ°4(€€€€€€€€€€€€€€€€‘Á±Õ¥¹M±Õœ°4(€€€€€€€€€€€€€€€ÍÑÉÑ½ÕÁÁ•È ‘±•Ù•°¤°4(€€€€€€€€€€€€€€€€‘…Ñ•½Éä°4(€€€€€€€€€€€€€€€€‘µ•ÍÍ…”°4(€€€€€€€€€€€€€€€€‘™½Éµ…ÑÑ•‘½¹Ñ•áÐ4(€€€€€€€€€€€€¤¤ì4(€€€€€€€ô4(€€€ô4(4(€€€€¼¨¨4(€€€€€¨¡•¬¥˜±½¥¹œ¥Ì…Ñ¥Ù”‰•™½É”•¹•É…Ñ¥¹œ¡•…Ùä½¹Ñ•áÐÁ…å±½…‘Ì¸4(€€€€€¨¼4(€€€ÁÉ½Ñ•Ñ•™Õ¹Ñ¥½¸Í¡½Õ±‘1½œ¡ÍÑÉ¥¹œ€‘±•Ù•°°ÍÑÉ¥¹œ€‘…Ñ•½Éä€ô€ÍåÍÑ•´œ¤è‰½½°4(€€€ì4(€€€€€€€¥˜€¡™Õ¹Ñ¥½¹}•á¥ÍÑÌ •¹ÑÉ…±}±½•É}Í¡½Õ±‘}±½œœ¤¤ì4(€€€€€€€€€€€É•ÑÕÉ¸•¹ÑÉ…±}±½•É}Í¡½Õ±‘}±½œ µäµÁ±Õ¥¸µÍ±Õœœ°€‘±•Ù•°°€‘…Ñ•½Éä¤ì4(€€€€€€€ô4(€€€€€€€É•ÑÕÉ¸‘•™¥¹• ]A}	Uœ¤€˜˜]A}	Uì4(€€€ô4)ô4(4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4)A…ÑÑ•É¸èAÉ½•‘ÕÉ…°!•±Á•ÈÕ¹Ñ¥½¸4)ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùø4(4)%˜å½ÕÈÁ±Õ¥¸ÕÍ•ÌÁÉ½•‘ÕÉ…°½‘”½È¡•±Á•È™Õ¹Ñ¥½¹Ìè4(4(ðýÁ¡À4)¥˜€ …™Õ¹Ñ¥½¹}•á¥ÍÑÌ µå}Á±Õ¥¹}±½œœ¤¤ì4(€€€™Õ¹Ñ¥½¸µå}Á±Õ¥¹}±½œ 4(€€€€€€€ÍÑÉ¥¹œ€‘±•Ù•°°4(€€€€€€€ÍÑÉ¥¹œ€‘µ•ÍÍ…”°4(€€€€€€€…ÉÉ…ä€‘½¹Ñ•áÐ€ômt°4(€€€€€€€ÍÑÉ¥¹œ€‘…Ñ•½Éä€ô€ÍåÍÑ•´œ4(€€€€¤èÙ½¥ì4(€€€€€€€¥˜€¡™Õ¹Ñ¥½¹}•á¥ÍÑÌ •¹ÑÉ…±}±½•É}±½œœ¤¤ì4(€€€€€€€€€€€•¹ÑÉ…±}±½•É}±½œ µäµÁ±Õ¥¸µÍ±Õœœ°€‘±•Ù•°°€‘µ•ÍÍ…”°€‘½¹Ñ•áÐ°€‘…Ñ•½Éä¤ì4(€€€€€€€ô•±Í•¥˜€¡‘•™¥¹• ]A}	Uœ¤€˜˜]A}	U¤ì4(€€€€€€€€€€€•ÉÉ½É}±½œ ‰mµäµÁ±Õ¥¸µÍ±Õumì‘±•Ù•±uôì‘µ•ÍÍ…•ôˆ¤ì4(€€€€€€€ô4(€€€ô4)ô4(4(´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´4(Ø¸5%8=9%UIQ%=8€˜=YII%L4(´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´4(4)‘µ¥¹¥ÍÑÉ…Ñ½ÉÌ…¸½¹™¥ÕÉ”±½¥¹œ‰•¡…Ù¥½È™É½´]½É‘AÉ•ÍÌ‘µ¥¸è4(´5…¥¸…Í¡‰½…ÉèQ½½±Ì€ø…É‘…É„•¹ÑÉ…°1½•È4(´±½‰…°M•ÑÑ¥¹ÌèQ½½±Ì€ø…É‘…É„•¹ÑÉ…°1½•È€øM½Á”€˜M•ÑÑ¥¹Ì4(€€´±½‰…°M•Ù•É¥ÑäQ¡É•Í¡½±4(€€´Ù•¹Ð…Ñ•½ÉäQ½±•Ì4(€€´I•Ñ•¹Ñ¥½¸A•É¥½€¡‘…åÌ‰•™½É”…ÕÑ½µ…Ñ•]@µÉ½¸ÁÉÕ¹¥¹œ¤4(€€´I…Ñ”1¥µ¥Ñ¥¹œ€¡µ…á¥µÕ´±½ÌÁ•Èµ¥¹ÕÑ”Á•ÈÁ±Õ¥¸¤4(´A•ÈµA±Õ¥¸=Ù•ÉÉ¥‘•ÌèQ½½±Ì€ø…É‘…É„•¹ÑÉ…°1½•È€øA±Õ¥¸=Ù•ÉÉ¥‘•Ì4(€€´Q…É•ÐÍÁ•¥™¥ŒÁ±Õ¥¸Í±ÕÌ€¡”¹œ¸€µäµÁ±Õ¥¸µÍ±Õœœ¤Ñ¼±½œ¥¸€‘•‰Õœœµ½‘”4(€€€Ý¡¥±”±•…Ù¥¹œÑ¡”±½‰…°Í¥Ñ”Ñ¡É•Í¡½±…Ð€Ý…É¹¥¹œœ½È€•ÉÉ½Èœ¸4(4(ôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôô4)9=%9QIQ%=8U%4(ôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôôô
+                                     cache invalidation, DB migrations.
+'admin'        Admin Operations      Setting updates, manual sync triggers,
+                                     data export/import by staff.
+'user_action'  User Actions          Customer profile edits, cart updates, order
+                                     submissions, account changes.
+'guest_action' Guest Actions         Anonymous visitor operations, public form
+                                     submissions, checkout steps.
+'auth'         Authentication        Logins, logouts, password resets, token
+                                     generation, 2FA validation.
+'security'     Security & Access     Nonce validation failures, forbidden access
+                                     attempts, capability checks rejected.
+'integration'  Third-Party / APIs    External REST API requests, webhooks,
+                                     payment gateways, SMS providers.
+'performance'  Performance & Profil  Execution duration benchmarks, query count
+                                     monitors, memory consumption spikes.
+
+--------------------------------------------------------------------------------
+4. CONTEXT DATA, CLIENT IP & PRIVACY PROTECTION
+--------------------------------------------------------------------------------
+
+Context data is passed as an associative array and stored as JSON in the
+database.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4.1 Automatic Client IP Capture
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the calling plugin does not explicitly provide an 'ip' or 'client_ip' key
+in the $context array, Central Logger automatically detects and attaches
+the client IP address using the following priority headers:
+1. HTTP_CF_CONNECTING_IP (Cloudflare)
+2. HTTP_X_FORWARDED_FOR (Proxy / Load Balancer - first valid IP extracted)
+3. HTTP_X_REAL_IP
+4. HTTP_CLIENT_IP
+5. REMOTE_ADDR
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4.2 Automatic PII & Credential Scrubbing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Central Logger automatically scrubs context data:
+1. Sensitive Key Redaction:
+   Any context key matching sensitive patterns is replaced with '[REDACTED]'.
+   Protected keys include:
+   - password, pass, pwd, secret, token, api_key, apikey, access_token,
+     auth_token, private_key, authorization, cookie, session_id, card_number,
+     cvv, cvc, ssn, pin
+2. Credit Card Numbers:
+   13 to 19 digit sequences formatted as card numbers are replaced with
+   '[CARD_REDACTED]'.
+3. Email Masking:
+   Email addresses in values are masked (e.g. 'j***e@example.com').
+4. IP Address Anonymization:
+   IPv4 addresses have their last octet zeroed (e.g. '192.168.1.0') when
+   'Privacy & Data Masking' is enabled in Settings.
+   IPv6 addresses have their last 80 bits zeroed.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+4.3 Extensibility (Filter Hook)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Developers can register additional sensitive key patterns via WordPress filter:
+
+add_filter('central_logger_sensitive_key_patterns', function (array $patterns): array {
+    $patterns[] = 'merchant_private_key';
+    $patterns[] = 'sms_gateway_secret';
+    return $patterns;
+});
+
+--------------------------------------------------------------------------------
+5. RECOMMENDED INTEGRATION PATTERNS
+--------------------------------------------------------------------------------
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pattern A: Drop-in Trait for Object-Oriented Plugins
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Copy this trait into your plugin to provide transparent logging across all
+your service classes:
+
+namespace MyPlugin\Traits;
+
+trait HasCentralLogger
+{
+    /**
+     * Log a message via Central Logger or fallback to WP error_log in debug mode.
+     *
+     * @param string $level Severity level ('debug', 'info', 'warning', 'error', 'critical').
+     * @param string $message Descriptive log text.
+     * @param array<string, mixed> $context Structured metadata.
+     * @param string $category Category slug.
+     */
+    protected function log(
+        string $level,
+        string $message,
+        array $context = [],
+        string $category = 'system'
+    ): void {
+        $pluginSlug = 'my-plugin-slug';
+
+        if (function_exists('central_logger_log')) {
+            central_logger_log($pluginSlug, $level, $message, $context, $category);
+            return;
+        }
+
+        // Fallback when Central Logger is inactive
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $formattedContext = !empty($context) ? ' ' . wp_json_encode($context) : '';
+            error_log(sprintf(
+                '[%s][%s][%s] %s%s',
+                $pluginSlug,
+                strtoupper($level),
+                $category,
+                $message,
+                $formattedContext
+            ));
+        }
+    }
+
+    /**
+     * Check if logging is active before generating heavy context payloads.
+     */
+    protected function shouldLog(string $level, string $category = 'system'): bool
+    {
+        if (function_exists('central_logger_should_log')) {
+            return central_logger_should_log('my-plugin-slug', $level, $category);
+        }
+        return defined('WP_DEBUG') && WP_DEBUG;
+    }
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pattern B: Procedural Helper Function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If your plugin uses procedural code or helper functions:
+
+if (!function_exists('my_plugin_log')) {
+    function my_plugin_log(
+        string $level,
+        string $message,
+        array $context = [],
+        string $category = 'system'
+    ): void {
+        if (function_exists('central_logger_log')) {
+            central_logger_log('my-plugin-slug', $level, $message, $context, $category);
+        } elseif (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log(sprintf('[my-plugin-slug][%s] %s', strtoupper($level), $message));
+        }
+    }
+}
+
+--------------------------------------------------------------------------------
+6. ADMIN CONFIGURATION & OVERRIDES
+--------------------------------------------------------------------------------
+
+Administrators can configure logging behavior from WordPress Admin:
+- Main Dashboard: Tools > Fardara Central Logger
+- Global Settings: Tools > Fardara Central Logger > Scope & Settings
+  - Global Severity Threshold
+  - Event Category Toggles
+  - Retention Period (days before automated WP-Cron pruning)
+  - Rate Limiting (maximum logs per minute per plugin)
+- Per-Plugin Overrides: Tools > Fardara Central Logger > Plugin Overrides
+  - Target specific plugin slugs (e.g. 'my-plugin-slug') to log in 'debug' mode
+    while leaving the global site threshold at 'warning' or 'error'.
+
+================================================================================
+END OF INTEGRATION GUIDE
+================================================================================
