@@ -41,14 +41,14 @@ class LogListTable extends \WP_List_Table
     public function get_columns(): array
     {
         return [
-            'id' => __('ID', 'central-logger'),
-            'timestamp' => __('Timestamp (UTC)', 'central-logger'),
-            'source_plugin' => __('Source Plugin', 'central-logger'),
-            'level' => __('Level', 'central-logger'),
-            'category' => __('Category', 'central-logger'),
-            'message' => __('Message', 'central-logger'),
-            'user' => __('User', 'central-logger'),
-            'context' => __('Context', 'central-logger'),
+            'id' => __('ID', 'fardara-central-logger'),
+            'timestamp' => __('Timestamp (UTC)', 'fardara-central-logger'),
+            'source_plugin' => __('Source Plugin', 'fardara-central-logger'),
+            'level' => __('Level', 'fardara-central-logger'),
+            'category' => __('Category', 'fardara-central-logger'),
+            'message' => __('Message', 'fardara-central-logger'),
+            'user' => __('User', 'fardara-central-logger'),
+            'context' => __('Context', 'fardara-central-logger'),
         ];
     }
 
@@ -109,7 +109,7 @@ class LogListTable extends \WP_List_Table
     public function column_source_plugin(array $item): string
     {
         $slug = (string) $item['source_plugin'];
-        $url = add_query_arg(['page' => 'central-logger', 'source_plugin' => $slug], admin_url('admin.php'));
+        $url = add_query_arg(['page' => 'central-logger', 'source_plugin' => $slug], admin_url('tools.php'));
         return '<a href="' . esc_url($url) . '" class="cl-badge cl-badge-plugin">' . esc_html($slug) . '</a>';
     }
 
@@ -148,7 +148,7 @@ class LogListTable extends \WP_List_Table
         
         $html = '<div class="cl-message-preview">' . esc_html($preview) . '</div>';
         if (strlen($message) > 120) {
-            $html .= '<button type="button" class="button button-link cl-btn-toggle-msg" data-full-msg="' . esc_attr($message) . '">' . esc_html__('View Full', 'central-logger') . '</button>';
+            $html .= '<button type="button" class="button button-link cl-btn-toggle-msg" data-full-msg="' . esc_attr($message) . '">' . esc_html__('View Full', 'fardara-central-logger') . '</button>';
         }
         return $html;
     }
@@ -162,7 +162,7 @@ class LogListTable extends \WP_List_Table
     {
         $userId = !empty($item['user_id']) ? (int) $item['user_id'] : 0;
         if ($userId <= 0) {
-            return '<span class="cl-guest-user">' . esc_html__('Guest / System', 'central-logger') . '</span>';
+            return '<span class="cl-guest-user">' . esc_html__('Guest / System', 'fardara-central-logger') . '</span>';
         }
 
         $user = get_userdata($userId);
@@ -186,7 +186,7 @@ class LogListTable extends \WP_List_Table
             return '<span class="cl-empty-context">&mdash;</span>';
         }
 
-        return '<button type="button" class="button button-small cl-view-context-btn" data-log-id="' . esc_attr((string) $item['id']) . '" data-context="' . esc_attr($context) . '">' . esc_html__('View JSON', 'central-logger') . '</button>';
+        return '<button type="button" class="button button-small cl-view-context-btn" data-log-id="' . esc_attr((string) $item['id']) . '" data-context="' . esc_attr($context) . '">' . esc_html__('View JSON', 'fardara-central-logger') . '</button>';
     }
 
     /**
@@ -201,11 +201,11 @@ class LogListTable extends \WP_List_Table
         }
 
         // phpcs:disable WordPress.Security.NonceVerification.Recommended
-        $currentPlugin = isset($_GET['source_plugin']) ? sanitize_key((string) $_GET['source_plugin']) : '';
-        $currentLevel = isset($_GET['level']) ? sanitize_key((string) $_GET['level']) : '';
-        $currentCategory = isset($_GET['category']) ? sanitize_key((string) $_GET['category']) : '';
-        $currentDateFrom = isset($_GET['date_from']) ? sanitize_text_field((string) $_GET['date_from']) : '';
-        $currentDateTo = isset($_GET['date_to']) ? sanitize_text_field((string) $_GET['date_to']) : '';
+        $currentPlugin = isset($_GET['source_plugin']) ? sanitize_key(wp_unslash((string) $_GET['source_plugin'])) : '';
+        $currentLevel = isset($_GET['level']) ? sanitize_key(wp_unslash((string) $_GET['level'])) : '';
+        $currentCategory = isset($_GET['category']) ? sanitize_key(wp_unslash((string) $_GET['category'])) : '';
+        $currentDateFrom = isset($_GET['date_from']) ? sanitize_text_field(wp_unslash((string) $_GET['date_from'])) : '';
+        $currentDateTo = isset($_GET['date_to']) ? sanitize_text_field(wp_unslash((string) $_GET['date_to'])) : '';
         // phpcs:enable
 
         $distinctPlugins = $this->getDistinctPlugins();
@@ -213,7 +213,7 @@ class LogListTable extends \WP_List_Table
         <div class="alignleft actions cl-table-filters">
             <!-- Source Plugin Filter -->
             <select name="source_plugin" id="cl-filter-plugin">
-                <option value=""><?php esc_html_e('All Source Plugins', 'central-logger'); ?></option>
+                <option value=""><?php esc_html_e('All Source Plugins', 'fardara-central-logger'); ?></option>
                 <?php foreach ($distinctPlugins as $pluginSlug) : ?>
                     <option value="<?php echo esc_attr($pluginSlug); ?>" <?php selected($currentPlugin, $pluginSlug); ?>>
                         <?php echo esc_html($pluginSlug); ?>
@@ -223,7 +223,7 @@ class LogListTable extends \WP_List_Table
 
             <!-- Level Filter -->
             <select name="level" id="cl-filter-level">
-                <option value=""><?php esc_html_e('All Levels', 'central-logger'); ?></option>
+                <option value=""><?php esc_html_e('All Levels', 'fardara-central-logger'); ?></option>
                 <?php foreach (LogLevel::all() as $lvl) : ?>
                     <option value="<?php echo esc_attr($lvl); ?>" <?php selected($currentLevel, $lvl); ?>>
                         <?php echo esc_html(strtoupper($lvl)); ?>
@@ -233,7 +233,7 @@ class LogListTable extends \WP_List_Table
 
             <!-- Category Filter -->
             <select name="category" id="cl-filter-category">
-                <option value=""><?php esc_html_e('All Categories', 'central-logger'); ?></option>
+                <option value=""><?php esc_html_e('All Categories', 'fardara-central-logger'); ?></option>
                 <?php foreach (LogCategory::all() as $cat) : ?>
                     <option value="<?php echo esc_attr($cat); ?>" <?php selected($currentCategory, $cat); ?>>
                         <?php echo esc_html($cat); ?>
@@ -242,30 +242,42 @@ class LogListTable extends \WP_List_Table
             </select>
 
             <!-- Date Range Filters -->
-            <input type="date" name="date_from" value="<?php echo esc_attr($currentDateFrom); ?>" placeholder="<?php esc_attr_e('From Date', 'central-logger'); ?>" title="<?php esc_attr_e('From Date', 'central-logger'); ?>" class="cl-date-input" />
-            <input type="date" name="date_to" value="<?php echo esc_attr($currentDateTo); ?>" placeholder="<?php esc_attr_e('To Date', 'central-logger'); ?>" title="<?php esc_attr_e('To Date', 'central-logger'); ?>" class="cl-date-input" />
+            <input type="date" name="date_from" value="<?php echo esc_attr($currentDateFrom); ?>" placeholder="<?php esc_attr_e('From Date', 'fardara-central-logger'); ?>" title="<?php esc_attr_e('From Date', 'fardara-central-logger'); ?>" class="cl-date-input" />
+            <input type="date" name="date_to" value="<?php echo esc_attr($currentDateTo); ?>" placeholder="<?php esc_attr_e('To Date', 'fardara-central-logger'); ?>" title="<?php esc_attr_e('To Date', 'fardara-central-logger'); ?>" class="cl-date-input" />
 
-            <?php submit_button(__('Filter', 'central-logger'), 'button', 'filter_action', false, ['id' => 'post-query-submit']); ?>
+            <?php submit_button(__('Filter', 'fardara-central-logger'), 'button', 'filter_action', false, ['id' => 'post-query-submit']); ?>
 
-            <?php if (!empty($currentPlugin) || !empty($currentLevel) || !empty($currentCategory) || !empty($currentDateFrom) || !empty($currentDateTo) || !empty($_GET['s'])) : ?>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=central-logger')); ?>" class="button button-secondary"><?php esc_html_e('Reset', 'central-logger'); ?></a>
+            <?php
+            // phpcs:disable WordPress.Security.NonceVerification.Recommended
+            $hasActiveFilter = !empty($currentPlugin) || !empty($currentLevel) || !empty($currentCategory) || !empty($currentDateFrom) || !empty($currentDateTo) || !empty($_GET['s']);
+            // phpcs:enable
+            if ($hasActiveFilter) : ?>
+                <a href="<?php echo esc_url(admin_url('tools.php?page=central-logger')); ?>" class="button button-secondary"><?php esc_html_e('Reset', 'fardara-central-logger'); ?></a>
             <?php endif; ?>
         </div>
         <?php
     }
 
     /**
-     * Retrieve distinct plugin slugs logged in the database.
+     * Retrieve distinct plugin slugs logged in the database with caching.
      *
      * @return string[]
      */
     private function getDistinctPlugins(): array
     {
+        $cached = get_transient('cl_distinct_plugins');
+        if (is_array($cached)) {
+            return $cached;
+        }
+
         global $wpdb;
         $table = Installer::getTableName();
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $results = $wpdb->get_col("SELECT DISTINCT source_plugin FROM {$table} ORDER BY source_plugin ASC");
-        return is_array($results) ? $results : [];
+        $results = is_array($results) ? $results : [];
+
+        set_transient('cl_distinct_plugins', $results, HOUR_IN_SECONDS);
+        return $results;
     }
 
     /**
@@ -275,6 +287,11 @@ class LogListTable extends \WP_List_Table
     {
         global $wpdb;
 
+        $columns = $this->get_columns();
+        $hidden = [];
+        $sortable = $this->get_sortable_columns();
+        $this->_column_headers = [$columns, $hidden, $sortable];
+
         $perPage = 25;
         $currentPage = $this->get_pagenum();
         $offset = ($currentPage - 1) * $perPage;
@@ -282,12 +299,12 @@ class LogListTable extends \WP_List_Table
         // Build active filters
         // phpcs:disable WordPress.Security.NonceVerification.Recommended
         $filters = [
-            'source_plugin' => isset($_GET['source_plugin']) ? sanitize_key((string) $_GET['source_plugin']) : '',
-            'level' => isset($_GET['level']) ? sanitize_key((string) $_GET['level']) : '',
-            'category' => isset($_GET['category']) ? sanitize_key((string) $_GET['category']) : '',
-            'date_from' => isset($_GET['date_from']) ? sanitize_text_field((string) $_GET['date_from']) : '',
-            'date_to' => isset($_GET['date_to']) ? sanitize_text_field((string) $_GET['date_to']) : '',
-            's' => isset($_GET['s']) ? sanitize_text_field((string) $_GET['s']) : '',
+            'source_plugin' => isset($_GET['source_plugin']) ? sanitize_key(wp_unslash((string) $_GET['source_plugin'])) : '',
+            'level' => isset($_GET['level']) ? sanitize_key(wp_unslash((string) $_GET['level'])) : '',
+            'category' => isset($_GET['category']) ? sanitize_key(wp_unslash((string) $_GET['category'])) : '',
+            'date_from' => isset($_GET['date_from']) ? sanitize_text_field(wp_unslash((string) $_GET['date_from'])) : '',
+            'date_to' => isset($_GET['date_to']) ? sanitize_text_field(wp_unslash((string) $_GET['date_to'])) : '',
+            's' => isset($_GET['s']) ? sanitize_text_field(wp_unslash((string) $_GET['s'])) : '',
         ];
         // phpcs:enable
 
@@ -300,17 +317,17 @@ class LogListTable extends \WP_List_Table
         // Total count query
         $countSql = "SELECT COUNT(*) FROM {$table} {$whereSql}";
         if (!empty($params)) {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
             $totalItems = (int) $wpdb->get_var($wpdb->prepare($countSql, ...$params));
         } else {
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
             $totalItems = (int) $wpdb->get_var($countSql);
         }
 
         // Sorting
         // phpcs:disable WordPress.Security.NonceVerification.Recommended
-        $orderby = isset($_GET['orderby']) ? sanitize_key((string) $_GET['orderby']) : 'id';
-        $order = isset($_GET['order']) && strtolower((string) $_GET['order']) === 'asc' ? 'ASC' : 'DESC';
+        $orderby = isset($_GET['orderby']) ? sanitize_key(wp_unslash((string) $_GET['orderby'])) : 'id';
+        $order = isset($_GET['order']) && strtolower(sanitize_text_field(wp_unslash((string) $_GET['order']))) === 'asc' ? 'ASC' : 'DESC';
         // phpcs:enable
 
         $allowedSortCols = ['id', 'timestamp', 'source_plugin', 'level', 'category'];
@@ -325,8 +342,26 @@ class LogListTable extends \WP_List_Table
 
         $dataSql = "SELECT id, timestamp, source_plugin, level, category, message, user_id, context FROM {$table} {$whereSql} ORDER BY {$orderby} {$order} LIMIT %d OFFSET %d";
         
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $this->items = $wpdb->get_results($wpdb->prepare($dataSql, ...$queryParams), ARRAY_A);
+
+        // Prime user cache in a single batch to prevent N+1 queries during row rendering
+        if (!empty($this->items) && is_array($this->items)) {
+            $userIds = [];
+            foreach ($this->items as $item) {
+                if (!empty($item['user_id'])) {
+                    $userIds[] = (int) $item['user_id'];
+                }
+            }
+            if (!empty($userIds)) {
+                $uniqueIds = array_unique($userIds);
+                if (function_exists('_prime_users_cache')) {
+                    _prime_users_cache($uniqueIds);
+                } elseif (function_exists('cache_users')) {
+                    cache_users($uniqueIds);
+                }
+            }
+        }
 
         $this->set_pagination_args([
             'total_items' => $totalItems,

@@ -1,0 +1,19 @@
+# Vendor & Dependencies
+/vendor/
+/node_modules/
+/composer.lock
+
+# Test Caches & Output
+/.phpunit.cache/
+/.phpunit.result.cache
+/coverage/
+/test-results/
+.phpcs-cache
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

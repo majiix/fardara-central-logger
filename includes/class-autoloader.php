@@ -36,6 +36,16 @@ final class Autoloader
         $parts = explode('\\', $relativeClass);
         $className = array_pop($parts);
 
+        if ($className === null || !preg_match('/^[a-zA-Z0-9_]+$/', $className)) {
+            return;
+        }
+
+        foreach ($parts as $part) {
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $part)) {
+                return;
+            }
+        }
+
         // Convert ClassName to class-classname.php
         $kebabName = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '-$0', $className));
         $fileName = 'class-' . $kebabName . '.php';

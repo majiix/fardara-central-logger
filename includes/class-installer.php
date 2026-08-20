@@ -47,6 +47,7 @@ final class Installer
             PRIMARY KEY (id),
             KEY idx_timestamp (timestamp),
             KEY idx_source_plugin (source_plugin),
+            KEY idx_plugin_time (source_plugin, timestamp),
             KEY idx_level (level),
             KEY idx_category (category),
             KEY idx_user_id (user_id)
@@ -55,6 +56,6 @@ final class Installer
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql);
 
-        update_option('central_logger_db_version', self::DB_VERSION);
+        update_option('central_logger_db_version', self::DB_VERSION, false);
     }
 }

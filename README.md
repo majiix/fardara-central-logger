@@ -1,4 +1,4 @@
-# Central Logger
+# Fardara Central Logger
 
 A lightweight, high-performance, standalone WordPress plugin that serves as a shared logging backend for multiple plugins across your WordPress site.
 

@@ -1,0 +1,15 @@
+# Development and testing files excluded from release archives
+/tests export-ignore
+/docs export-ignore
+/.codegraph export-ignore
+/phpstan.neon export-ignore
+/phpunit.xml.dist export-ignore
+/.phpunit.cache export-ignore
+/.phpunit.result.cache export-ignore
+/.gitignore export-ignore
+/.gitattributes export-ignore
+/composer.json export-ignore
+/composer.lock export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/.github export-ignore

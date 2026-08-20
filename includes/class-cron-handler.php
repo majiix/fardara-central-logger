@@ -59,7 +59,7 @@ final class CronHandler
     }
 
     /**
-     * Prune logs older than N days.
+     * Prune logs older than N days using chunked batch deletions.
      *
      * @param int $retentionDays Days to retain.
      * @return int Number of deleted rows.
@@ -74,17 +74,30 @@ final class CronHandler
 
         $table = Installer::getTableName();
         $cutoffDate = gmdate('Y-m-d H:i:s', time() - ($retentionDays * DAY_IN_SECONDS));
+        $totalDeleted = 0;
+        $batchLimit = 5000;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $deleted = $wpdb->query(
-            $wpdb->prepare(
-                // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-                "DELETE FROM {$table} WHERE timestamp < %s",
-                $cutoffDate
-            )
-        );
+        // Perform chunked batch deletions to prevent table locking on large datasets
+        do {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
+            $deleted = $wpdb->query(
+                $wpdb->prepare(
+                    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+                    "DELETE FROM {$table} WHERE timestamp < %s LIMIT %d",
+                    $cutoffDate,
+                    $batchLimit
+                )
+            );
 
-        return (int) $deleted;
+            if ($deleted === false || $deleted <= 0) {
+                break;
+            }
+
+            $totalDeleted += (int) $deleted;
+        } while ($deleted === $batchLimit);
+
+        delete_transient('cl_distinct_plugins');
+        return $totalDeleted;
     }
 
     /**
@@ -97,8 +110,9 @@ final class CronHandler
         global $wpdb;
         $table = Installer::getTableName();
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $deleted = $wpdb->query("TRUNCATE TABLE {$table}");
+        delete_transient('cl_distinct_plugins');
         return (int) $deleted;
     }
 }

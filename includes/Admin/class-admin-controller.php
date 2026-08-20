@@ -32,18 +32,16 @@ final class AdminController
     }
 
     /**
-     * Register top-level admin menu page.
+     * Register admin menu page under Tools.
      */
     public static function registerMenu(): void
     {
-        add_menu_page(
-            __('Central Logger', 'central-logger'),
-            __('Central Logger', 'central-logger'),
+        add_management_page(
+            __('Fardara Central Logger', 'fardara-central-logger'),
+            __('Fardara Central Logger', 'fardara-central-logger'),
             'manage_options',
             self::MENU_SLUG,
-            [self::class, 'renderPage'],
-            'dashicons-database',
-            30
+            [self::class, 'renderPage']
         );
     }
 
@@ -54,7 +52,7 @@ final class AdminController
      */
     public static function enqueueAssets(string $hookSuffix): void
     {
-        if ($hookSuffix !== 'toplevel_page_' . self::MENU_SLUG) {
+        if ($hookSuffix !== 'tools_page_' . self::MENU_SLUG) {
             return;
         }
 
@@ -74,10 +72,10 @@ final class AdminController
         );
 
         wp_localize_script('central-logger-admin-js', 'centralLoggerData', [
-            'copiedText' => __('Copied!', 'central-logger'),
-            'closeText' => __('Close', 'central-logger'),
-            'copyText' => __('Copy JSON', 'central-logger'),
-            'modalTitle' => __('Log Context Data', 'central-logger'),
+            'copiedText' => __('Copied!', 'fardara-central-logger'),
+            'closeText' => __('Close', 'fardara-central-logger'),
+            'copyText' => __('Copy JSON', 'fardara-central-logger'),
+            'modalTitle' => __('Log Context Data', 'fardara-central-logger'),
         ]);
     }
 
@@ -87,7 +85,7 @@ final class AdminController
     public static function renderPage(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('Unauthorized access.', 'central-logger'), 403);
+            wp_die(esc_html__('Unauthorized access.', 'fardara-central-logger'), 403);
         }
 
         // phpcs:disable WordPress.Security.NonceVerification.Recommended
@@ -99,27 +97,27 @@ final class AdminController
         }
 
         $tabUrls = [
-            'logs' => admin_url('admin.php?page=' . self::MENU_SLUG . '&tab=logs'),
-            'settings' => admin_url('admin.php?page=' . self::MENU_SLUG . '&tab=settings'),
-            'overrides' => admin_url('admin.php?page=' . self::MENU_SLUG . '&tab=overrides'),
+            'logs' => admin_url('tools.php?page=' . self::MENU_SLUG . '&tab=logs'),
+            'settings' => admin_url('tools.php?page=' . self::MENU_SLUG . '&tab=settings'),
+            'overrides' => admin_url('tools.php?page=' . self::MENU_SLUG . '&tab=overrides'),
         ];
         ?>
         <div class="wrap cl-wrap">
             <h1 class="cl-main-title">
                 <span class="dashicons dashicons-database"></span>
-                <?php esc_html_e('Central Logger Dashboard', 'central-logger'); ?>
+                <?php esc_html_e('Fardara Central Logger Dashboard', 'fardara-central-logger'); ?>
                 <span class="cl-version-tag">v<?php echo esc_html(CENTRAL_LOGGER_VERSION); ?></span>
             </h1>
 
             <nav class="nav-tab-wrapper cl-nav-tabs">
                 <a href="<?php echo esc_url($tabUrls['logs']); ?>" class="nav-tab <?php echo $activeTab === 'logs' ? 'nav-tab-active' : ''; ?>">
-                    <span class="dashicons dashicons-list-view"></span> <?php esc_html_e('Logs Explorer', 'central-logger'); ?>
+                    <span class="dashicons dashicons-list-view"></span> <?php esc_html_e('Logs Explorer', 'fardara-central-logger'); ?>
                 </a>
                 <a href="<?php echo esc_url($tabUrls['settings']); ?>" class="nav-tab <?php echo $activeTab === 'settings' ? 'nav-tab-active' : ''; ?>">
-                    <span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e('Scope & Settings', 'central-logger'); ?>
+                    <span class="dashicons dashicons-admin-settings"></span> <?php esc_html_e('Scope & Settings', 'fardara-central-logger'); ?>
                 </a>
                 <a href="<?php echo esc_url($tabUrls['overrides']); ?>" class="nav-tab <?php echo $activeTab === 'overrides' ? 'nav-tab-active' : ''; ?>">
-                    <span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Plugin Overrides', 'central-logger'); ?>
+                    <span class="dashicons dashicons-randomize"></span> <?php esc_html_e('Plugin Overrides', 'fardara-central-logger'); ?>
                 </a>
             </nav>
 
@@ -145,17 +143,17 @@ final class AdminController
                 <div class="cl-modal-overlay"></div>
                 <div class="cl-modal-card">
                     <div class="cl-modal-header">
-                        <h3 id="cl-modal-title"><?php esc_html_e('Structured Context Payload', 'central-logger'); ?></h3>
-                        <button type="button" class="cl-modal-close" aria-label="<?php esc_attr_e('Close', 'central-logger'); ?>">&times;</button>
+                        <h3 id="cl-modal-title"><?php esc_html_e('Structured Context Payload', 'fardara-central-logger'); ?></h3>
+                        <button type="button" class="cl-modal-close" aria-label="<?php esc_attr_e('Close', 'fardara-central-logger'); ?>">&times;</button>
                     </div>
                     <div class="cl-modal-body">
                         <pre id="cl-modal-json-view"><code class="json"></code></pre>
                     </div>
                     <div class="cl-modal-footer">
                         <button type="button" id="cl-modal-copy-btn" class="button button-secondary">
-                            <span class="dashicons dashicons-admin-page"></span> <?php esc_html_e('Copy JSON', 'central-logger'); ?>
+                            <span class="dashicons dashicons-admin-page"></span> <?php esc_html_e('Copy JSON', 'fardara-central-logger'); ?>
                         </button>
-                        <button type="button" class="button button-primary cl-modal-close-btn"><?php esc_html_e('Close', 'central-logger'); ?></button>
+                        <button type="button" class="button button-primary cl-modal-close-btn"><?php esc_html_e('Close', 'fardara-central-logger'); ?></button>
                     </div>
                 </div>
             </div>
@@ -172,16 +170,7 @@ final class AdminController
         $listTable->prepare_items();
 
         // Build active filter query args for export buttons
-        // phpcs:disable WordPress.Security.NonceVerification.Recommended
-        $exportArgs = [
-            'source_plugin' => isset($_GET['source_plugin']) ? sanitize_key((string) $_GET['source_plugin']) : '',
-            'level' => isset($_GET['level']) ? sanitize_key((string) $_GET['level']) : '',
-            'category' => isset($_GET['category']) ? sanitize_key((string) $_GET['category']) : '',
-            'date_from' => isset($_GET['date_from']) ? sanitize_text_field((string) $_GET['date_from']) : '',
-            'date_to' => isset($_GET['date_to']) ? sanitize_text_field((string) $_GET['date_to']) : '',
-            's' => isset($_GET['s']) ? sanitize_text_field((string) $_GET['s']) : '',
-        ];
-        // phpcs:enable
+        $exportArgs = self::getExportFilters();
 
         $csvExportUrl = wp_nonce_url(
             add_query_arg(array_merge(['action' => 'central_logger_export_csv'], array_filter($exportArgs)), admin_url('admin-post.php')),
@@ -201,29 +190,48 @@ final class AdminController
         <div class="cl-logs-toolbar">
             <div class="cl-export-buttons">
                 <a href="<?php echo esc_url($csvExportUrl); ?>" class="button button-secondary">
-                    <span class="dashicons dashicons-media-spreadsheet"></span> <?php esc_html_e('Export CSV', 'central-logger'); ?>
+                    <span class="dashicons dashicons-media-spreadsheet"></span> <?php esc_html_e('Export CSV', 'fardara-central-logger'); ?>
                 </a>
                 <a href="<?php echo esc_url($jsonExportUrl); ?>" class="button button-secondary">
-                    <span class="dashicons dashicons-media-code"></span> <?php esc_html_e('Export JSON', 'central-logger'); ?>
+                    <span class="dashicons dashicons-media-code"></span> <?php esc_html_e('Export JSON', 'fardara-central-logger'); ?>
                 </a>
             </div>
 
             <div class="cl-danger-actions">
-                <a href="<?php echo esc_url($truncateUrl); ?>" class="button button-link-delete" onclick="return confirm('<?php echo esc_js(__('Are you sure you want to permanently delete all logs? This cannot be undone.', 'central-logger')); ?>');">
-                    <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Clear All Logs', 'central-logger'); ?>
+                <a href="<?php echo esc_url($truncateUrl); ?>" class="button button-link-delete" onclick="return confirm('<?php echo esc_js(__('Are you sure you want to permanently delete all logs? This cannot be undone.', 'fardara-central-logger')); ?>');">
+                    <span class="dashicons dashicons-trash"></span> <?php esc_html_e('Clear All Logs', 'fardara-central-logger'); ?>
                 </a>
             </div>
         </div>
 
-        <form id="central-logger-filter-form" method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>">
+        <form id="central-logger-filter-form" method="get" action="<?php echo esc_url(admin_url('tools.php')); ?>">
             <input type="hidden" name="page" value="<?php echo esc_attr(self::MENU_SLUG); ?>" />
             <input type="hidden" name="tab" value="logs" />
             <?php
-            $listTable->search_box(__('Search Logs', 'central-logger'), 'cl-search');
+            $listTable->search_box(__('Search Logs', 'fardara-central-logger'), 'cl-search');
             $listTable->display();
             ?>
         </form>
         <?php
+    }
+
+    /**
+     * Parse active filter query parameters from $_GET.
+     *
+     * @return array<string, string>
+     */
+    private static function getExportFilters(): array
+    {
+        // phpcs:disable WordPress.Security.NonceVerification.Recommended
+        return [
+            'source_plugin' => isset($_GET['source_plugin']) ? sanitize_key(wp_unslash((string) $_GET['source_plugin'])) : '',
+            'level' => isset($_GET['level']) ? sanitize_key(wp_unslash((string) $_GET['level'])) : '',
+            'category' => isset($_GET['category']) ? sanitize_key(wp_unslash((string) $_GET['category'])) : '',
+            'date_from' => isset($_GET['date_from']) ? sanitize_text_field(wp_unslash((string) $_GET['date_from'])) : '',
+            'date_to' => isset($_GET['date_to']) ? sanitize_text_field(wp_unslash((string) $_GET['date_to'])) : '',
+            's' => isset($_GET['s']) ? sanitize_text_field(wp_unslash((string) $_GET['s'])) : '',
+        ];
+        // phpcs:enable
     }
 
     /**
@@ -232,23 +240,11 @@ final class AdminController
     public static function handleExportCsv(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('Unauthorized access.', 'central-logger'), 403);
+            wp_die(esc_html__('Unauthorized access.', 'fardara-central-logger'), 403);
         }
 
         check_admin_referer('central_logger_export_action');
-
-        // phpcs:disable WordPress.Security.NonceVerification.Recommended
-        $filters = [
-            'source_plugin' => isset($_GET['source_plugin']) ? sanitize_key((string) $_GET['source_plugin']) : '',
-            'level' => isset($_GET['level']) ? sanitize_key((string) $_GET['level']) : '',
-            'category' => isset($_GET['category']) ? sanitize_key((string) $_GET['category']) : '',
-            'date_from' => isset($_GET['date_from']) ? sanitize_text_field((string) $_GET['date_from']) : '',
-            'date_to' => isset($_GET['date_to']) ? sanitize_text_field((string) $_GET['date_to']) : '',
-            's' => isset($_GET['s']) ? sanitize_text_field((string) $_GET['s']) : '',
-        ];
-        // phpcs:enable
-
-        Exporter::exportCsv($filters);
+        Exporter::exportCsv(self::getExportFilters());
     }
 
     /**
@@ -257,23 +253,11 @@ final class AdminController
     public static function handleExportJson(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('Unauthorized access.', 'central-logger'), 403);
+            wp_die(esc_html__('Unauthorized access.', 'fardara-central-logger'), 403);
         }
 
         check_admin_referer('central_logger_export_action');
-
-        // phpcs:disable WordPress.Security.NonceVerification.Recommended
-        $filters = [
-            'source_plugin' => isset($_GET['source_plugin']) ? sanitize_key((string) $_GET['source_plugin']) : '',
-            'level' => isset($_GET['level']) ? sanitize_key((string) $_GET['level']) : '',
-            'category' => isset($_GET['category']) ? sanitize_key((string) $_GET['category']) : '',
-            'date_from' => isset($_GET['date_from']) ? sanitize_text_field((string) $_GET['date_from']) : '',
-            'date_to' => isset($_GET['date_to']) ? sanitize_text_field((string) $_GET['date_to']) : '',
-            's' => isset($_GET['s']) ? sanitize_text_field((string) $_GET['s']) : '',
-        ];
-        // phpcs:enable
-
-        Exporter::exportJson($filters);
+        Exporter::exportJson(self::getExportFilters());
     }
 
     /**
@@ -282,13 +266,13 @@ final class AdminController
     public static function handleTruncate(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('Unauthorized access.', 'central-logger'), 403);
+            wp_die(esc_html__('Unauthorized access.', 'fardara-central-logger'), 403);
         }
 
         check_admin_referer('central_logger_truncate_action');
         CronHandler::truncateLogs();
 
-        wp_safe_redirect(add_query_arg(['page' => self::MENU_SLUG, 'cleared' => '1'], admin_url('admin.php')));
+        wp_safe_redirect(add_query_arg(['page' => self::MENU_SLUG, 'cleared' => '1'], admin_url('tools.php')));
         exit;
     }
 }

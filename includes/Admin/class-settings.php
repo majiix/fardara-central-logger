@@ -88,7 +88,7 @@ class Settings
         add_settings_error(
             'central_logger_messages',
             'central_logger_updated',
-            __('Central Logger settings saved successfully.', 'central-logger'),
+            __('Fardara Central Logger settings saved successfully.', 'fardara-central-logger'),
             'updated'
         );
 
@@ -101,24 +101,26 @@ class Settings
     public static function handleSaveOverride(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('Unauthorized access.', 'central-logger'), 403);
+            wp_die(esc_html__('Unauthorized access.', 'fardara-central-logger'), 403);
         }
 
         check_admin_referer('central_logger_save_override_action');
 
-        $pluginSlug = isset($_POST['override_plugin_slug']) ? sanitize_key((string) $_POST['override_plugin_slug']) : '';
+        $pluginSlug = isset($_POST['override_plugin_slug']) ? sanitize_key(wp_unslash((string) $_POST['override_plugin_slug'])) : '';
         if (empty($pluginSlug)) {
-            wp_safe_redirect(add_query_arg(['page' => 'central-logger', 'tab' => 'overrides', 'error' => 'empty_slug'], admin_url('admin.php')));
+            wp_safe_redirect(add_query_arg(['page' => 'central-logger', 'tab' => 'overrides', 'error' => 'empty_slug'], admin_url('tools.php')));
             exit;
         }
 
-        $threshold = isset($_POST['override_threshold']) ? sanitize_key((string) $_POST['override_threshold']) : LogLevel::DEBUG;
+        $threshold = isset($_POST['override_threshold']) ? sanitize_key(wp_unslash((string) $_POST['override_threshold'])) : LogLevel::DEBUG;
         $thresholdOptions = LogLevel::getThresholdOptions();
         if (!array_key_exists($threshold, $thresholdOptions)) {
             $threshold = LogLevel::DEBUG;
         }
 
-        $rawCategories = isset($_POST['override_categories']) && is_array($_POST['override_categories']) ? $_POST['override_categories'] : [];
+        $rawCategories = isset($_POST['override_categories']) && is_array($_POST['override_categories'])
+            ? array_map('sanitize_text_field', wp_unslash($_POST['override_categories']))
+            : [];
         $categories = [];
         foreach (LogCategory::all() as $cat) {
             $categories[$cat] = !empty($rawCategories[$cat]);
@@ -135,7 +137,7 @@ class Settings
         update_option(LogManager::OPTION_KEY, $settings);
         LogManager::resetSettingsCache();
 
-        wp_safe_redirect(add_query_arg(['page' => 'central-logger', 'tab' => 'overrides', 'updated' => '1'], admin_url('admin.php')));
+        wp_safe_redirect(add_query_arg(['page' => 'central-logger', 'tab' => 'overrides', 'updated' => '1'], admin_url('tools.php')));
         exit;
     }
 
@@ -145,10 +147,10 @@ class Settings
     public static function handleDeleteOverride(): void
     {
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('Unauthorized access.', 'central-logger'), 403);
+            wp_die(esc_html__('Unauthorized access.', 'fardara-central-logger'), 403);
         }
 
-        $pluginSlug = isset($_GET['plugin']) ? sanitize_key((string) $_GET['plugin']) : '';
+        $pluginSlug = isset($_GET['plugin']) ? sanitize_key(wp_unslash((string) $_GET['plugin'])) : '';
         check_admin_referer('delete_override_' . $pluginSlug);
 
         $settings = LogManager::getSettings();
@@ -161,7 +163,7 @@ class Settings
             LogManager::resetSettingsCache();
         }
 
-        wp_safe_redirect(add_query_arg(['page' => 'central-logger', 'tab' => 'overrides', 'deleted' => '1'], admin_url('admin.php')));
+        wp_safe_redirect(add_query_arg(['page' => 'central-logger', 'tab' => 'overrides', 'deleted' => '1'], admin_url('tools.php')));
         exit;
     }
 
@@ -180,9 +182,9 @@ class Settings
             ?>
 
             <div class="cl-settings-card">
-                <h2><?php esc_html_e('Logging Severity Scope', 'central-logger'); ?></h2>
+                <h2><?php esc_html_e('Logging Severity Scope', 'fardara-central-logger'); ?></h2>
                 <p class="description">
-                    <?php esc_html_e('Choose the minimum global log severity required for an event to be recorded.', 'central-logger'); ?>
+                    <?php esc_html_e('Choose the minimum global log severity required for an event to be recorded.', 'fardara-central-logger'); ?>
                 </p>
 
                 <fieldset class="cl-threshold-list">
@@ -197,9 +199,9 @@ class Settings
             </div>
 
             <div class="cl-settings-card">
-                <h2><?php esc_html_e('Event Category Filters', 'central-logger'); ?></h2>
+                <h2><?php esc_html_e('Event Category Filters', 'fardara-central-logger'); ?></h2>
                 <p class="description">
-                    <?php esc_html_e('Enable or disable specific event categories independently. Events in disabled categories will be rejected regardless of severity.', 'central-logger'); ?>
+                    <?php esc_html_e('Enable or disable specific event categories independently. Events in disabled categories will be rejected regardless of severity.', 'fardara-central-logger'); ?>
                 </p>
 
                 <div class="cl-category-grid">
@@ -219,43 +221,43 @@ class Settings
             </div>
 
             <div class="cl-settings-card">
-                <h2><?php esc_html_e('Retention & Automatic Pruning', 'central-logger'); ?></h2>
+                <h2><?php esc_html_e('Retention & Automatic Pruning', 'fardara-central-logger'); ?></h2>
                 <table class="form-table" role="presentation">
                     <tr>
                         <th scope="row">
-                            <label for="cl-retention-days"><?php esc_html_e('Log Retention Period', 'central-logger'); ?></label>
+                            <label for="cl-retention-days"><?php esc_html_e('Log Retention Period', 'fardara-central-logger'); ?></label>
                         </th>
                         <td>
                             <input type="number" id="cl-retention-days" name="<?php echo esc_attr(LogManager::OPTION_KEY); ?>[retention_days]" value="<?php echo esc_attr((string) $settings['retention_days']); ?>" min="0" max="3650" class="small-text" />
-                            <span><?php esc_html_e('days (Set to 0 to retain logs indefinitely)', 'central-logger'); ?></span>
-                            <p class="description"><?php esc_html_e('Expired logs are automatically deleted once daily via WP-Cron.', 'central-logger'); ?></p>
+                            <span><?php esc_html_e('days (Set to 0 to retain logs indefinitely)', 'fardara-central-logger'); ?></span>
+                            <p class="description"><?php esc_html_e('Expired logs are automatically deleted once daily via WP-Cron.', 'fardara-central-logger'); ?></p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="cl-rate-limit"><?php esc_html_e('Rate Limit Protection', 'central-logger'); ?></label>
+                            <label for="cl-rate-limit"><?php esc_html_e('Rate Limit Protection', 'fardara-central-logger'); ?></label>
                         </th>
                         <td>
                             <input type="number" id="cl-rate-limit" name="<?php echo esc_attr(LogManager::OPTION_KEY); ?>[rate_limit_per_minute]" value="<?php echo esc_attr((string) $settings['rate_limit_per_minute']); ?>" min="0" max="10000" class="small-text" />
-                            <span><?php esc_html_e('logs per minute per plugin slug (0 to disable)', 'central-logger'); ?></span>
-                            <p class="description"><?php esc_html_e('Prevents individual plugins from flooding the database. Suppressed counts are logged as a summary entry.', 'central-logger'); ?></p>
+                            <span><?php esc_html_e('logs per minute per plugin slug (0 to disable)', 'fardara-central-logger'); ?></span>
+                            <p class="description"><?php esc_html_e('Prevents individual plugins from flooding the database. Suppressed counts are logged as a summary entry.', 'fardara-central-logger'); ?></p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <?php esc_html_e('Privacy & Data Masking', 'central-logger'); ?>
+                            <?php esc_html_e('Privacy & Data Masking', 'fardara-central-logger'); ?>
                         </th>
                         <td>
                             <label for="cl-anonymize-pii">
                                 <input type="checkbox" id="cl-anonymize-pii" name="<?php echo esc_attr(LogManager::OPTION_KEY); ?>[anonymize_pii]" value="1" <?php checked(!empty($settings['anonymize_pii'])); ?> />
-                                <?php esc_html_e('Automatically anonymize IP addresses, emails, credit cards, and redact sensitive context keys (passwords, tokens, secrets).', 'central-logger'); ?>
+                                <?php esc_html_e('Automatically anonymize IP addresses, emails, credit cards, and redact sensitive context keys (passwords, tokens, secrets).', 'fardara-central-logger'); ?>
                             </label>
                         </td>
                     </tr>
                 </table>
             </div>
 
-            <?php submit_button(__('Save Scope & Settings', 'central-logger'), 'primary', 'submit', true); ?>
+            <?php submit_button(__('Save Scope & Settings', 'fardara-central-logger'), 'primary', 'submit', true); ?>
         </form>
         <?php
     }
@@ -272,21 +274,21 @@ class Settings
         ?>
         <div class="cl-overrides-container">
             <div class="cl-settings-card">
-                <h2><?php esc_html_e('Active Per-Plugin Overrides', 'central-logger'); ?></h2>
+                <h2><?php esc_html_e('Active Per-Plugin Overrides', 'fardara-central-logger'); ?></h2>
                 <p class="description">
-                    <?php esc_html_e('Override the global severity threshold and active categories for specific plugins (e.g. debug everything for a newly developed plugin while keeping global logs at error level).', 'central-logger'); ?>
+                    <?php esc_html_e('Override the global severity threshold and active categories for specific plugins (e.g. debug everything for a newly developed plugin while keeping global logs at error level).', 'fardara-central-logger'); ?>
                 </p>
 
                 <?php if (empty($overrides)) : ?>
-                    <p><em><?php esc_html_e('No plugin overrides configured. All plugins are currently governed by the global settings.', 'central-logger'); ?></em></p>
+                    <p><em><?php esc_html_e('No plugin overrides configured. All plugins are currently governed by the global settings.', 'fardara-central-logger'); ?></em></p>
                 <?php else : ?>
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                             <tr>
-                                <th style="width: 20%;"><?php esc_html_e('Plugin Slug', 'central-logger'); ?></th>
-                                <th style="width: 25%;"><?php esc_html_e('Severity Threshold', 'central-logger'); ?></th>
-                                <th><?php esc_html_e('Enabled Categories', 'central-logger'); ?></th>
-                                <th style="width: 120px;"><?php esc_html_e('Actions', 'central-logger'); ?></th>
+                                <th style="width: 20%;"><?php esc_html_e('Plugin Slug', 'fardara-central-logger'); ?></th>
+                                <th style="width: 25%;"><?php esc_html_e('Severity Threshold', 'fardara-central-logger'); ?></th>
+                                <th><?php esc_html_e('Enabled Categories', 'fardara-central-logger'); ?></th>
+                                <th style="width: 120px;"><?php esc_html_e('Actions', 'fardara-central-logger'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -308,14 +310,14 @@ class Settings
                                     <td><code><?php echo esc_html($slug); ?></code></td>
                                     <td>
                                         <span class="cl-badge cl-level-<?php echo esc_attr($ruleThreshold); ?>">
-                                            <?php echo esc_html(strtoupper($ruleThreshold)); ?>
+                                             <?php echo esc_html(strtoupper($ruleThreshold)); ?>
                                         </span>
                                     </td>
                                     <td>
                                         <?php if (count($enabledCatNames) === count(LogCategory::all())) : ?>
-                                            <span class="cl-badge cl-badge-category"><?php esc_html_e('All Categories', 'central-logger'); ?></span>
+                                            <span class="cl-badge cl-badge-category"><?php esc_html_e('All Categories', 'fardara-central-logger'); ?></span>
                                         <?php elseif (empty($enabledCatNames)) : ?>
-                                            <em><?php esc_html_e('None (All Rejected)', 'central-logger'); ?></em>
+                                            <em><?php esc_html_e('None (All Rejected)', 'fardara-central-logger'); ?></em>
                                         <?php else : ?>
                                             <?php foreach ($enabledCatNames as $c) : ?>
                                                 <span class="cl-badge cl-badge-category"><?php echo esc_html($c); ?></span>
@@ -323,8 +325,12 @@ class Settings
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="<?php echo esc_url($deleteUrl); ?>" class="button button-small button-link-delete" onclick="return confirm('<?php echo esc_js(sprintf(__('Remove override for %s?', 'central-logger'), $slug)); ?>');">
-                                            <?php esc_html_e('Delete', 'central-logger'); ?>
+                                        <?php
+                                        /* translators: %s: plugin slug */
+                                        $confirmDeleteMsg = sprintf(__('Remove override for %s?', 'fardara-central-logger'), $slug);
+                                        ?>
+                                        <a href="<?php echo esc_url($deleteUrl); ?>" class="button button-small button-link-delete" onclick="return confirm('<?php echo esc_js($confirmDeleteMsg); ?>');">
+                                            <?php esc_html_e('Delete', 'fardara-central-logger'); ?>
                                         </a>
                                     </td>
                                 </tr>
@@ -335,7 +341,7 @@ class Settings
             </div>
 
             <div class="cl-settings-card">
-                <h2><?php esc_html_e('Add / Update Plugin Override', 'central-logger'); ?></h2>
+                <h2><?php esc_html_e('Add / Update Plugin Override', 'fardara-central-logger'); ?></h2>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="central_logger_save_override" />
                     <?php wp_nonce_field('central_logger_save_override_action'); ?>
@@ -343,16 +349,16 @@ class Settings
                     <table class="form-table" role="presentation">
                         <tr>
                             <th scope="row">
-                                <label for="override_plugin_slug"><?php esc_html_e('Source Plugin Slug', 'central-logger'); ?></label>
+                                <label for="override_plugin_slug"><?php esc_html_e('Source Plugin Slug', 'fardara-central-logger'); ?></label>
                             </th>
                             <td>
                                 <input type="text" id="override_plugin_slug" name="override_plugin_slug" placeholder="e.g. fardara-payment-gateway" class="regular-text" required />
-                                <p class="description"><?php esc_html_e('The exact slug passed by the plugin in its log() calls.', 'central-logger'); ?></p>
+                                <p class="description"><?php esc_html_e('The exact slug passed by the plugin in its log() calls.', 'fardara-central-logger'); ?></p>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="override_threshold"><?php esc_html_e('Severity Threshold', 'central-logger'); ?></label>
+                                <label for="override_threshold"><?php esc_html_e('Severity Threshold', 'fardara-central-logger'); ?></label>
                             </th>
                             <td>
                                 <select id="override_threshold" name="override_threshold">
@@ -364,7 +370,7 @@ class Settings
                         </tr>
                         <tr>
                             <th scope="row">
-                                <?php esc_html_e('Enabled Categories', 'central-logger'); ?>
+                                <?php esc_html_e('Enabled Categories', 'fardara-central-logger'); ?>
                             </th>
                             <td>
                                 <div class="cl-checkbox-columns">
@@ -379,7 +385,7 @@ class Settings
                         </tr>
                     </table>
 
-                    <?php submit_button(__('Save Override Rule', 'central-logger'), 'secondary', 'submit', true); ?>
+                    <?php submit_button(__('Save Override Rule', 'fardara-central-logger'), 'secondary', 'submit', true); ?>
                 </form>
             </div>
         </div>

@@ -1,17 +1,21 @@
-# Central Logger - Project Documentation
+# Fardara Central Logger - Project Documentation
 
 ## 1. Overview
-Central Logger is a standalone WordPress plugin that serves as a centralized, high-performance logging backend for a suite of WordPress plugins (10+ plugins). It provides persistent MySQL storage in a custom indexed table, severity thresholding, category-level toggling, per-plugin override rules, automated PII scrubbing, transient-based rate limiting, scheduled log rotation, and an admin dashboard with CSV/JSON export capabilities.
+Fardara Central Logger is a standalone WordPress plugin that serves as a centralized, high-performance logging backend for a suite of WordPress plugins (10+ plugins). It provides persistent MySQL storage in a custom indexed table, severity thresholding, category-level toggling, per-plugin override rules, automated PII scrubbing, transient-based rate limiting, scheduled log rotation, and an admin dashboard with CSV/JSON export capabilities.
 
 ## 2. Tech Stack & Dependencies
 - **Language**: PHP 8.1+ (strict types enabled)
 - **Framework**: WordPress 6.0+
 - **Database**: MySQL / MariaDB (custom table `_central_logger_logs` managed via `dbDelta()`)
 - **Frontend / Admin**: WordPress Core UI, Admin CSS, Vanilla JavaScript (jQuery-dependent for WP admin compatibility)
-- **External Dependencies**: Zero runtime third-party packages or Composer dependencies (self-contained and zero-overhead)
+- **Development Toolchain**: PHPStan Level 8 (`phpstan/phpstan`, `szepeviktor/phpstan-wordpress`)
+- **External Dependencies**: Zero runtime third-party packages (zero runtime overhead)
 
 ## 3. Architecture & Key Components
-- **`central-logger.php`**: Plugin header, bootstrap, constants, activation/deactivation hooks.
+- **`fardara-central-logger.php`**: Plugin header, bootstrap, constants, activation/deactivation hooks.
+- **`readme.txt`**: Official WordPress.org formatted repository documentation and headers.
+- **`developers.txt`**: Technical developer and AI agent integration manual with copy-paste patterns and reference tables.
+- **`composer.json` & `phpstan.neon`**: Static analysis and quality tooling configuration.
 - **`includes/class-autoloader.php`**: Autoloader for the `CentralLogger\` namespace.
 - **`includes/class-log-level.php`**: Severity hierarchy and threshold comparison (`debug`, `info`, `warning`, `error`, `critical`, `disabled`).
 - **`includes/class-log-category.php`**: Registry and metadata for 8 standard categories (`system`, `admin`, `user_action`, `guest_action`, `auth`, `security`, `integration`, `performance`).
@@ -22,7 +26,7 @@ Central Logger is a standalone WordPress plugin that serves as a centralized, hi
 - **`includes/class-exporter.php`**: Streaming CSV and JSON exporter supporting all list table filters.
 - **`includes/class-logger.php`**: PSR-3 style object-oriented logger scoped to individual plugin slugs.
 - **`includes/api.php`**: Procedural global API helpers (`central_logger_log()`, `central_logger_should_log()`).
-- **`includes/Admin/class-admin-controller.php`**: Top-level menu page router, modal viewer, and action dispatcher.
+- **`includes/Admin/class-admin-controller.php`**: Admin menu router under Tools (`tools.php?page=central-logger`), modal viewer, and action dispatcher.
 - **`includes/Admin/class-log-list-table.php`**: Custom `WP_List_Table` implementation.
 - **`includes/Admin/class-settings.php`**: Settings API handler and per-plugin overrides manager.
 - **`uninstall.php`**: Cleanup handler on plugin deletion.

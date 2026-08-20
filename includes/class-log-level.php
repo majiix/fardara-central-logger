@@ -55,12 +55,12 @@ final class LogLevel
     public static function getThresholdOptions(): array
     {
         return [
-            self::DEBUG => __('Everything (debug and up)', 'central-logger'),
-            self::INFO => __('Info and up', 'central-logger'),
-            self::WARNING => __('Warnings and up', 'central-logger'),
-            self::ERROR => __('Errors and critical only', 'central-logger'),
-            self::CRITICAL => __('Critical only', 'central-logger'),
-            self::DISABLED => __('Logging disabled entirely', 'central-logger'),
+            self::DEBUG => __('Everything (debug and up)', 'fardara-central-logger'),
+            self::INFO => __('Info and up', 'fardara-central-logger'),
+            self::WARNING => __('Warnings and up', 'fardara-central-logger'),
+            self::ERROR => __('Errors and critical only', 'fardara-central-logger'),
+            self::CRITICAL => __('Critical only', 'fardara-central-logger'),
+            self::DISABLED => __('Logging disabled entirely', 'fardara-central-logger'),
         ];
     }
 

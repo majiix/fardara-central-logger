@@ -166,7 +166,7 @@ final class LogManager
                 LogCategory::SYSTEM,
                 sprintf(
                     /* translators: 1: number of logs, 2: plugin slug */
-                    __('Central Logger: %1$d log entries suppressed for plugin "%2$s" due to rate limiting.', 'central-logger'),
+                    __('Central Logger: %1$d log entries suppressed for plugin "%2$s" due to rate limiting.', 'fardara-central-logger'),
                     $rateCheck['suppressed_count'],
                     $sourcePlugin
                 ),
@@ -177,6 +177,14 @@ final class LogManager
 
         if (!$rateCheck['allowed']) {
             return false;
+        }
+
+        // Automatically capture client IP if not already provided in context
+        if (!isset($context['client_ip']) && !isset($context['ip'])) {
+            $detectedIp = self::getClientIp();
+            if (!empty($detectedIp)) {
+                $context['client_ip'] = $detectedIp;
+            }
         }
 
         // PII anonymization
@@ -202,6 +210,38 @@ final class LogManager
             $context,
             $userId
         );
+    }
+
+    /**
+     * Detect the client IP address from server headers.
+     *
+     * @return string Validated IP address or empty string.
+     */
+    public static function getClientIp(): string
+    {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_REAL_IP',
+            'HTTP_CLIENT_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header]) && is_string($_SERVER[$header])) {
+                $rawHeader = function_exists('wp_unslash') ? wp_unslash($_SERVER[$header]) : $_SERVER[$header];
+                $cleanHeader = function_exists('sanitize_text_field') ? sanitize_text_field((string) $rawHeader) : trim((string) $rawHeader);
+                $ips = explode(',', $cleanHeader);
+                foreach ($ips as $rawIp) {
+                    $cleanIp = trim($rawIp);
+                    if (filter_var($cleanIp, FILTER_VALIDATE_IP)) {
+                        return $cleanIp;
+                    }
+                }
+            }
+        }
+
+        return '';
     }
 
     /**

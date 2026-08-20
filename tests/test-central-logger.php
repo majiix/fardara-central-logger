@@ -1,9 +1,11 @@
 <?php
-declare(strict_types=1);
-
 /**
  * Automated CLI Test Suite for Central Logger.
+ *
+ * phpcs:ignoreFile
  */
+
+declare(strict_types=1);
 
 // Define WordPress constants for CLI test environment
 if (!defined('ABSPATH')) {
@@ -16,7 +18,7 @@ if (!defined('CENTRAL_LOGGER_VERSION')) {
     define('CENTRAL_LOGGER_VERSION', '1.0.0');
 }
 if (!defined('CENTRAL_LOGGER_URL')) {
-    define('CENTRAL_LOGGER_URL', 'http://localhost/wp-content/plugins/fardara-central-logger/');
+    define('CENTRAL_LOGGER_URL', 'https://example.com/wp-content/plugins/fardara-central-logger/');
 }
 
 // Mock WordPress functions if running outside a full WP runtime
@@ -38,7 +40,7 @@ if (!function_exists('sanitize_key')) {
 }
 if (!function_exists('sanitize_text_field')) {
     function sanitize_text_field(string $str): string {
-        return trim(strip_tags($str));
+        return trim((string) preg_replace('@<[^>]*?>@', '', $str));
     }
 }
 if (!function_exists('wp_json_encode')) {
@@ -209,6 +211,19 @@ assertTest('Detection helper: class_exists CentralLogger\Logger', class_exists(L
 $logger = new Logger('special-plugin', 'auth');
 assertTest('Logger class: shouldLog honors plugin override', $logger->shouldLog('debug'));
 assertTest('Global helper: central_logger_should_log honors plugin override', central_logger_should_log('special-plugin', 'debug', 'auth'));
+
+// 7. Test Client IP Auto-Detection
+$_SERVER['REMOTE_ADDR'] = '203.0.113.50';
+assertTest('Client IP: detected from REMOTE_ADDR', LogManager::getClientIp() === '203.0.113.50');
+
+$_SERVER['HTTP_CF_CONNECTING_IP'] = '198.51.100.22';
+assertTest('Client IP: Cloudflare header takes precedence', LogManager::getClientIp() === '198.51.100.22');
+unset($_SERVER['HTTP_CF_CONNECTING_IP']);
+
+$_SERVER['HTTP_X_FORWARDED_FOR'] = '192.0.2.1, 10.0.0.1';
+assertTest('Client IP: X-Forwarded-For parsed first valid IP', LogManager::getClientIp() === '192.0.2.1');
+unset($_SERVER['HTTP_X_FORWARDED_FOR']);
+unset($_SERVER['REMOTE_ADDR']);
 
 echo PHP_EOL . "=== Test Results: {$passed} Passed, {$failed} Failed ===" . PHP_EOL . PHP_EOL;
 

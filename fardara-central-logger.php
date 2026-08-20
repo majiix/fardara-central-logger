@@ -1,14 +1,15 @@
 <?php
 /**
- * Plugin Name: Central Logger
- * Plugin URI: https://fardara.com
+ * Plugin Name: Fardara Central Logger
+ * Plugin URI: https://fardara.ir
  * Description: High-performance standalone centralized logging backend for WordPress plugins suite with structured context, severity thresholds, category toggling, rate limiting, and PII anonymization.
  * Version: 1.0.0
  * Requires at least: 6.0
  * Requires PHP: 8.1
- * Author: Fardara
- * License: GPL v2 or later
- * Text Domain: central-logger
+ * Author: micromax
+ * License: GPL-2.0-or-later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: fardara-central-logger
  * Domain Path: /languages
  */
 

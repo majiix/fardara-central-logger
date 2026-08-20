@@ -30,36 +30,36 @@ final class LogCategory
     {
         return [
             self::SYSTEM => [
-                'label' => __('System / Technical', 'central-logger'),
-                'description' => __('PHP errors, database queries/failures, API failures, cron job status.', 'central-logger'),
+                'label' => __('System / Technical', 'fardara-central-logger'),
+                'description' => __('PHP errors, database queries/failures, API failures, cron job status.', 'fardara-central-logger'),
             ],
             self::ADMIN => [
-                'label' => __('Admin Actions', 'central-logger'),
-                'description' => __('Settings changes, plugin activation/deactivation, administrative mutations.', 'central-logger'),
+                'label' => __('Admin Actions', 'fardara-central-logger'),
+                'description' => __('Settings changes, plugin activation/deactivation, administrative mutations.', 'fardara-central-logger'),
             ],
             self::USER_ACTION => [
-                'label' => __('Logged-in User Actions', 'central-logger'),
-                'description' => __('Form submissions and actions executed by authenticated users.', 'central-logger'),
+                'label' => __('Logged-in User Actions', 'fardara-central-logger'),
+                'description' => __('Form submissions and actions executed by authenticated users.', 'fardara-central-logger'),
             ],
             self::GUEST_ACTION => [
-                'label' => __('Guest User Actions', 'central-logger'),
-                'description' => __('Anonymous form submissions, guest checkouts, and public interactions.', 'central-logger'),
+                'label' => __('Guest User Actions', 'fardara-central-logger'),
+                'description' => __('Anonymous form submissions, guest checkouts, and public interactions.', 'fardara-central-logger'),
             ],
             self::AUTH => [
-                'label' => __('Authentication Events', 'central-logger'),
-                'description' => __('Login attempts (success/failure), logouts, password resets, 2FA triggers.', 'central-logger'),
+                'label' => __('Authentication Events', 'fardara-central-logger'),
+                'description' => __('Login attempts (success/failure), logouts, password resets, 2FA triggers.', 'fardara-central-logger'),
             ],
             self::SECURITY => [
-                'label' => __('Security Events', 'central-logger'),
-                'description' => __('Permission denials, nonce validation failures, rate limits, suspicious input.', 'central-logger'),
+                'label' => __('Security Events', 'fardara-central-logger'),
+                'description' => __('Permission denials, nonce validation failures, rate limits, suspicious input.', 'fardara-central-logger'),
             ],
             self::INTEGRATION => [
-                'label' => __('Third-Party / Integrations', 'central-logger'),
-                'description' => __('Webhooks, external REST API calls, payment gateway callbacks.', 'central-logger'),
+                'label' => __('Third-Party / Integrations', 'fardara-central-logger'),
+                'description' => __('Webhooks, external REST API calls, payment gateway callbacks.', 'fardara-central-logger'),
             ],
             self::PERFORMANCE => [
-                'label' => __('Performance', 'central-logger'),
-                'description' => __('Slow queries, execution timeouts, high memory usage warnings.', 'central-logger'),
+                'label' => __('Performance', 'fardara-central-logger'),
+                'description' => __('Slow queries, execution timeouts, high memory usage warnings.', 'fardara-central-logger'),
             ],
         ];
     }
@@ -81,11 +81,7 @@ final class LogCategory
      */
     public static function getDefaultCategoryFlags(): array
     {
-        $flags = [];
-        foreach (self::all() as $category) {
-            $flags[$category] = true;
-        }
-        return $flags;
+        return array_fill_keys(self::all(), true);
     }
 
     /**

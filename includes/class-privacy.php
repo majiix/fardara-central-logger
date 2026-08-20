@@ -76,9 +76,22 @@ final class Privacy
      */
     public static function isSensitiveKey(string $key): bool
     {
+        $patterns = self::SENSITIVE_KEY_PATTERNS;
+        if (function_exists('apply_filters')) {
+            /**
+             * Filter list of sensitive key patterns to automatically redact in log contexts.
+             *
+             * @param string[] $patterns Array of sensitive substring patterns.
+             */
+            $filtered = apply_filters('central_logger_sensitive_key_patterns', $patterns);
+            if (is_array($filtered)) {
+                $patterns = $filtered;
+            }
+        }
+
         $normalized = strtolower(trim($key));
-        foreach (self::SENSITIVE_KEY_PATTERNS as $pattern) {
-            if (str_contains($normalized, $pattern)) {
+        foreach ($patterns as $pattern) {
+            if (is_string($pattern) && str_contains($normalized, strtolower($pattern))) {
                 return true;
             }
         }
