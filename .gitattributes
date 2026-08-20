@@ -13,3 +13,4 @@
 /package.json export-ignore
 /package-lock.json export-ignore
 /.github export-ignore
+/agents.md export-ignore
