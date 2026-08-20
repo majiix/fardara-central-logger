@@ -24,6 +24,7 @@ Fardara Central Logger is a standalone WordPress plugin that serves as a central
 - **`includes/class-rate-limiter.php`**: Transient-backed sliding window rate limiter with suppressed log count summaries.
 - **`includes/class-cron-handler.php`**: Scheduled daily log rotation and pruning.
 - **`includes/class-exporter.php`**: Streaming CSV and JSON exporter supporting all list table filters.
+- **`includes/class-github-updater.php`**: Native GitHub updater engine for manual updates from the public repository main branch.
 - **`includes/class-logger.php`**: PSR-3 style object-oriented logger scoped to individual plugin slugs.
 - **`includes/api.php`**: Procedural global API helpers (`central_logger_log()`, `central_logger_should_log()`).
 - **`includes/Admin/class-admin-controller.php`**: Admin menu router under Tools (`tools.php?page=central-logger`), modal viewer, and action dispatcher.
@@ -50,6 +51,8 @@ Fardara Central Logger is a standalone WordPress plugin that serves as a central
    - Filter by source plugin, severity level, category, date range, and free-text search.
    - Modal drawer to inspect and copy structured JSON context.
    - Direct CSV and JSON exports.
+7. **Native GitHub Updater**:
+   - Manual one-click update directly from the public GitHub repository (`main` branch) from the settings page or plugins list.
 
 ## 5. Verification Commands
 Run automated tests locally via CLI:

@@ -24,6 +24,7 @@ define('CENTRAL_LOGGER_VERSION', '1.0.0');
 define('CENTRAL_LOGGER_FILE', __FILE__);
 define('CENTRAL_LOGGER_PATH', plugin_dir_path(__FILE__));
 define('CENTRAL_LOGGER_URL', plugin_dir_url(__FILE__));
+define('CENTRAL_LOGGER_GITHUB_REPO', 'https://github.com/majiix/fardara-central-logger');
 
 // Register Autoloader
 require_once CENTRAL_LOGGER_PATH . 'includes/class-autoloader.php';
@@ -48,10 +49,32 @@ register_deactivation_hook(__FILE__, static function (): void {
 });
 
 /**
+ * Add settings and GitHub download action links to Plugins page.
+ *
+ * @param array<int|string, string> $links Existing action links.
+ * @return array<int|string, string> Modified action links.
+ */
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), static function (array $links): array {
+    $settingsLink = sprintf(
+        '<a href="%s">%s</a>',
+        esc_url(admin_url('tools.php?page=central-logger&tab=settings')),
+        esc_html__('Settings', 'fardara-central-logger')
+    );
+    $downloadLink = sprintf(
+        '<a href="#" id="central-logger-github-download-plugin-link" class="central-logger-gh-download-link" style="color: #16a34a; font-weight: 600;">%s</a>',
+        esc_html__('Download From GitHub', 'fardara-central-logger')
+    );
+
+    array_unshift($links, $settingsLink, $downloadLink);
+    return $links;
+});
+
+/**
  * Bootstrap Central Logger.
  */
 add_action('plugins_loaded', static function (): void {
     \CentralLogger\CronHandler::init();
+    \CentralLogger\GithubUpdater::init();
 
     if (is_admin()) {
         \CentralLogger\Admin\AdminController::init();

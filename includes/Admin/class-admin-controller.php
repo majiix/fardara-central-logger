@@ -46,22 +46,27 @@ final class AdminController
     }
 
     /**
-     * Enqueue admin CSS and JS assets on the Central Logger page only.
+     * Enqueue admin CSS and JS assets on the Central Logger page and Plugins page.
      *
      * @param string $hookSuffix Current admin page hook.
      */
     public static function enqueueAssets(string $hookSuffix): void
     {
-        if ($hookSuffix !== 'tools_page_' . self::MENU_SLUG) {
+        $isLoggerPage = ($hookSuffix === 'tools_page_' . self::MENU_SLUG);
+        $isPluginsPage = ($hookSuffix === 'plugins.php');
+
+        if (!$isLoggerPage && !$isPluginsPage) {
             return;
         }
 
-        wp_enqueue_style(
-            'central-logger-admin-css',
-            CENTRAL_LOGGER_URL . 'assets/css/admin.css',
-            [],
-            CENTRAL_LOGGER_VERSION
-        );
+        if ($isLoggerPage) {
+            wp_enqueue_style(
+                'central-logger-admin-css',
+                CENTRAL_LOGGER_URL . 'assets/css/admin.css',
+                [],
+                CENTRAL_LOGGER_VERSION
+            );
+        }
 
         wp_enqueue_script(
             'central-logger-admin-js',
@@ -72,6 +77,10 @@ final class AdminController
         );
 
         wp_localize_script('central-logger-admin-js', 'centralLoggerData', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'githubNonce' => wp_create_nonce(\CentralLogger\GithubUpdater::NONCE_ACTION),
+            'downloadingText' => __('Downloading & installing update from GitHub main branch...', 'fardara-central-logger'),
+            'confirmDownloadText' => __('Are you sure you want to download and overwrite the plugin files from GitHub main branch?', 'fardara-central-logger'),
             'copiedText' => __('Copied!', 'fardara-central-logger'),
             'closeText' => __('Close', 'fardara-central-logger'),
             'copyText' => __('Copy JSON', 'fardara-central-logger'),

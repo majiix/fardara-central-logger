@@ -225,6 +225,11 @@ assertTest('Client IP: X-Forwarded-For parsed first valid IP', LogManager::getCl
 unset($_SERVER['HTTP_X_FORWARDED_FOR']);
 unset($_SERVER['REMOTE_ADDR']);
 
+// 8. Test GithubUpdater
+assertTest('GithubUpdater: class exists', class_exists(\CentralLogger\GithubUpdater::class));
+assertTest('GithubUpdater: default branch is main', \CentralLogger\GithubUpdater::DEFAULT_BRANCH === 'main');
+assertTest('GithubUpdater: default repo is public fardara-central-logger', str_contains(\CentralLogger\GithubUpdater::DEFAULT_REPO, 'fardara-central-logger'));
+
 echo PHP_EOL . "=== Test Results: {$passed} Passed, {$failed} Failed ===" . PHP_EOL . PHP_EOL;
 
 if ($failed > 0) {

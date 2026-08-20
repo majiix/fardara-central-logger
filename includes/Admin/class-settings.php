@@ -257,6 +257,32 @@ class Settings
                 </table>
             </div>
 
+            <div class="cl-settings-card">
+                <h2><?php esc_html_e('GitHub Updates', 'fardara-central-logger'); ?></h2>
+                <p class="description">
+                    <?php esc_html_e('Update Fardara Central Logger directly from the official public GitHub repository.', 'fardara-central-logger'); ?>
+                </p>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Repository', 'fardara-central-logger'); ?></th>
+                        <td>
+                            <code>https://github.com/majiix/fardara-central-logger</code>
+                            <p class="description"><?php esc_html_e('Target Branch: main (Public repository)', 'fardara-central-logger'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Manual Update', 'fardara-central-logger'); ?></th>
+                        <td>
+                            <button type="button" id="central-logger-download-github-btn" class="button button-primary" style="background: #16a34a; border-color: #15803d; color: #ffffff; display: inline-flex; align-items: center; gap: 6px;">
+                                <span class="dashicons dashicons-update" style="font-size: 16px; width: 16px; height: 16px; line-height: 16px;"></span>
+                                <?php esc_html_e('Download & Install Update from GitHub (main)', 'fardara-central-logger'); ?>
+                            </button>
+                            <div id="central-logger-github-download-status" style="margin-top: 10px;"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
             <?php submit_button(__('Save Scope & Settings', 'fardara-central-logger'), 'primary', 'submit', true); ?>
         </form>
         <?php
