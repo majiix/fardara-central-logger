@@ -43,6 +43,11 @@ if (!function_exists('sanitize_text_field')) {
         return trim((string) preg_replace('@<[^>]*?>@', '', $str));
     }
 }
+if (!function_exists('wp_unslash')) {
+    function wp_unslash(mixed $value): mixed {
+        return is_string($value) ? stripslashes($value) : $value;
+    }
+}
 if (!function_exists('wp_json_encode')) {
     function wp_json_encode(mixed $data, int $options = 0): string|false {
         return json_encode($data, $options);

@@ -4,7 +4,7 @@
  * Plugin URI: https://fardara.ir
  * Description: High-performance standalone centralized logging backend for WordPress plugins suite with structured context, severity thresholds, category toggling, rate limiting, and PII anonymization.
  * Version: 1.0.0
- * Requires at least: 6.0
+ * Requires at least: 7.0
  * Requires PHP: 8.1
  * Author: micromax
  * License: GPL-2.0-or-later

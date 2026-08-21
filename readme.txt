@@ -2,8 +2,8 @@
 Contributors: fardara
 Donate link: https://fardara.com
 Tags: logging, central-logger, developer-tools, debug, monitoring
-Requires at least: 6.0
-Tested up to: 7.0
+Requires at least: 7.0
+Tested up to: 7.1
 Requires PHP: 8.1
 Stable tag: 1.0.0
 License: GPL-2.0-or-later

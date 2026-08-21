@@ -228,8 +228,10 @@ final class LogManager
         ];
 
         foreach ($headers as $header) {
+            // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
             if (!empty($_SERVER[$header]) && is_string($_SERVER[$header])) {
-                $rawHeader = function_exists('wp_unslash') ? wp_unslash($_SERVER[$header]) : $_SERVER[$header];
+                $rawHeader = function_exists('wp_unslash') ? wp_unslash($_SERVER[$header]) : stripslashes($_SERVER[$header]);
+                // phpcs:enable
                 $cleanHeader = function_exists('sanitize_text_field') ? sanitize_text_field((string) $rawHeader) : trim((string) $rawHeader);
                 $ips = explode(',', $cleanHeader);
                 foreach ($ips as $rawIp) {
