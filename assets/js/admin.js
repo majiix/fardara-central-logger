@@ -8,15 +8,12 @@
         var $modal = $('#cl-context-modal');
         var $modalJson = $('#cl-modal-json-view code');
         var $copyBtn = $('#cl-modal-copy-btn');
-        var currentRawJson = '';
 
         // Open JSON Modal
         $(document).on('click', '.cl-view-context-btn', function (e) {
             e.preventDefault();
             var raw = $(this).attr('data-context');
             var logId = $(this).attr('data-log-id');
-
-            currentRawJson = raw;
 
             try {
                 var parsed = JSON.parse(raw);

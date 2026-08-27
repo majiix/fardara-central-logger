@@ -15,7 +15,7 @@ if (!defined('CENTRAL_LOGGER_PATH')) {
     define('CENTRAL_LOGGER_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 }
 if (!defined('CENTRAL_LOGGER_VERSION')) {
-    define('CENTRAL_LOGGER_VERSION', '1.0.0');
+    define('CENTRAL_LOGGER_VERSION', '1.0.1');
 }
 if (!defined('CENTRAL_LOGGER_URL')) {
     define('CENTRAL_LOGGER_URL', 'https://example.com/wp-content/plugins/fardara-central-logger/');

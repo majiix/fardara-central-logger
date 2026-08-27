@@ -22,8 +22,6 @@ final class AdminController
      */
     public static function init(): void
     {
-        delete_transient('cl_distinct_plugins');
-
         add_action('admin_menu', [self::class, 'registerMenu']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueueAssets']);
         add_action('admin_post_central_logger_export_csv', [self::class, 'handleExportCsv']);

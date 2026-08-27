@@ -96,7 +96,6 @@ final class CronHandler
             $totalDeleted += (int) $deleted;
         } while ($deleted === $batchLimit);
 
-        delete_transient('cl_distinct_plugins');
         return $totalDeleted;
     }
 
@@ -112,7 +111,6 @@ final class CronHandler
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $deleted = $wpdb->query("TRUNCATE TABLE {$table}");
-        delete_transient('cl_distinct_plugins');
         return (int) $deleted;
     }
 }

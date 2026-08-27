@@ -5,7 +5,7 @@ Tags: logging, central-logger, developer-tools, debug, monitoring
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,10 @@ Client plugins can use `function_exists('central_logger_log')` or `class_exists(
 Navigate to **Fardara Central Logger** under the Tools menu in the admin dashboard, apply any desired filters, and click **Export CSV** or **Export JSON**.
 
 == Changelog ==
+
+= 1.0.1 =
+* Removed orphan transient operations and cleaned up dead code.
+* Enhanced internal code hygiene and asset optimization.
 
 = 1.0.0 =
 * Initial release.
