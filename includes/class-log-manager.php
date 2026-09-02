@@ -22,6 +22,18 @@ final class LogManager
     private static ?array $settingsCache = null;
 
     /**
+     * In-memory buffer for log rows pending insertion.
+     *
+     * @var array<int, array<string, mixed>>
+     */
+    private static array $logBuffer = [];
+
+    /**
+     * Flag indicating if the shutdown flusher has been registered.
+     */
+    private static bool $shutdownRegistered = false;
+
+    /**
      * Get default plugin settings.
      *
      * @return array<string, mixed>
@@ -160,7 +172,7 @@ final class LogManager
 
         // If rate limit flushed previously suppressed logs, insert a summary warning first
         if ($rateCheck['suppressed_count'] > 0) {
-            self::insertRow(
+            self::queueRow(
                 $sourcePlugin,
                 LogLevel::WARNING,
                 LogCategory::SYSTEM,
@@ -202,7 +214,7 @@ final class LogManager
             }
         }
 
-        return self::insertRow(
+        self::queueRow(
             $sourcePlugin,
             $normalizedLevel,
             $normalizedCategory,
@@ -210,6 +222,8 @@ final class LogManager
             $context,
             $userId
         );
+
+        return true;
     }
 
     /**
@@ -247,7 +261,7 @@ final class LogManager
     }
 
     /**
-     * Insert a sanitized row into the database table.
+     * Queue a log row in memory and register shutdown flush handler.
      *
      * @param string $sourcePlugin Plugin slug.
      * @param string $level Normalized level.
@@ -255,47 +269,104 @@ final class LogManager
      * @param string $message Message text.
      * @param array<string, mixed> $context Structured context.
      * @param int|null $userId User ID or null.
-     * @return bool True if inserted successfully.
      */
-    private static function insertRow(
+    private static function queueRow(
         string $sourcePlugin,
         string $level,
         string $category,
         string $message,
         array $context,
         ?int $userId
-    ): bool {
-        global $wpdb;
+    ): void {
+        if (!self::$shutdownRegistered && function_exists('register_shutdown_function')) {
+            register_shutdown_function([self::class, 'flushBuffer']);
+            self::$shutdownRegistered = true;
+        }
 
-        $table = Installer::getTableName();
         $timestamp = gmdate('Y-m-d H:i:s');
         $contextJson = !empty($context) ? wp_json_encode($context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : null;
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-        $result = $wpdb->insert(
-            $table,
-            [
-                'timestamp' => $timestamp,
-                'source_plugin' => $sourcePlugin,
-                'level' => $level,
-                'category' => $category,
-                'message' => $message,
-                'context' => $contextJson,
-                'user_id' => $userId,
-                'created_at' => $timestamp,
-            ],
-            [
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                '%s',
-                $userId !== null ? '%d' : null,
-                '%s',
-            ]
-        );
+        self::$logBuffer[] = [
+            'timestamp' => $timestamp,
+            'source_plugin' => $sourcePlugin,
+            'level' => $level,
+            'category' => $category,
+            'message' => $message,
+            'context' => $contextJson,
+            'user_id' => $userId,
+            'created_at' => $timestamp,
+        ];
 
-        return $result !== false;
+        // Auto-flush in chunks if buffer reaches 50 rows (e.g. during CLI or batch jobs)
+        if (count(self::$logBuffer) >= 50) {
+            self::flushBuffer();
+        }
+    }
+
+    /**
+     * Flush in-memory buffered log entries to MySQL database table in a single bulk query.
+     */
+    public static function flushBuffer(): void
+    {
+        if (empty(self::$logBuffer)) {
+            return;
+        }
+
+        global $wpdb;
+        if (!isset($wpdb) || !is_object($wpdb) || !method_exists($wpdb, 'query')) {
+            self::$logBuffer = [];
+            return;
+        }
+
+        $rows = self::$logBuffer;
+        self::$logBuffer = [];
+
+        $table = Installer::getTableName();
+        $placeholders = [];
+        $values = [];
+
+        foreach ($rows as $row) {
+            $contextPlaceholder = $row['context'] !== null ? '%s' : 'NULL';
+            $userPlaceholder = $row['user_id'] !== null ? '%d' : 'NULL';
+
+            $placeholders[] = "(%s, %s, %s, %s, %s, {$contextPlaceholder}, {$userPlaceholder}, %s)";
+
+            $values[] = $row['timestamp'];
+            $values[] = $row['source_plugin'];
+            $values[] = $row['level'];
+            $values[] = $row['category'];
+            $values[] = $row['message'];
+
+            if ($row['context'] !== null) {
+                $values[] = $row['context'];
+            }
+
+            if ($row['user_id'] !== null) {
+                $values[] = (int) $row['user_id'];
+            }
+
+            $values[] = $row['created_at'];
+        }
+
+        $query = "INSERT INTO {$table} (`timestamp`, `source_plugin`, `level`, `category`, `message`, `context`, `user_id`, `created_at`) VALUES " . implode(', ', $placeholders);
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+        $wpdb->query($wpdb->prepare($query, ...$values));
+    }
+
+    /**
+     * Get count of currently buffered logs pending insertion.
+     */
+    public static function getBufferedCount(): int
+    {
+        return count(self::$logBuffer);
+    }
+
+    /**
+     * Clear the in-memory log buffer without inserting.
+     */
+    public static function clearBuffer(): void
+    {
+        self::$logBuffer = [];
     }
 }

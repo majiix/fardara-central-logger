@@ -15,7 +15,7 @@ if (!defined('CENTRAL_LOGGER_PATH')) {
     define('CENTRAL_LOGGER_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 }
 if (!defined('CENTRAL_LOGGER_VERSION')) {
-    define('CENTRAL_LOGGER_VERSION', '1.0.1');
+    define('CENTRAL_LOGGER_VERSION', '1.0.2');
 }
 if (!defined('CENTRAL_LOGGER_URL')) {
     define('CENTRAL_LOGGER_URL', 'https://example.com/wp-content/plugins/fardara-central-logger/');
@@ -234,6 +234,32 @@ unset($_SERVER['REMOTE_ADDR']);
 assertTest('GithubUpdater: class exists', class_exists(\CentralLogger\GithubUpdater::class));
 assertTest('GithubUpdater: default branch is main', \CentralLogger\GithubUpdater::DEFAULT_BRANCH === 'main');
 assertTest('GithubUpdater: default repo is public fardara-central-logger', str_contains(\CentralLogger\GithubUpdater::DEFAULT_REPO, 'fardara-central-logger'));
+
+// 9. Test In-Memory Log Buffering
+LogManager::clearBuffer();
+RateLimiter::reset();
+$GLOBALS['mock_options'] = [];
+LogManager::resetSettingsCache();
+
+assertTest('LogManager buffer: initial count is 0', LogManager::getBufferedCount() === 0);
+LogManager::log('test-plugin', 'info', 'Buffered log message 1');
+LogManager::log('test-plugin', 'warning', 'Buffered log message 2');
+assertTest('LogManager buffer: holds 2 buffered logs in memory', LogManager::getBufferedCount() === 2);
+LogManager::flushBuffer();
+assertTest('LogManager buffer: emptied after flushBuffer', LogManager::getBufferedCount() === 0);
+
+// 10. Test RateLimiter Deferred Transient Synchronization
+RateLimiter::reset();
+$GLOBALS['mock_transients'] = [];
+RateLimiter::check('sync-test-plugin', 10);
+RateLimiter::check('sync-test-plugin', 10);
+// Transients should not be written synchronously to storage before sync
+$pluginHash = substr(md5('sync-test-plugin'), 0, 12);
+$minuteBucket = (int) intdiv(time(), 60);
+$rateKey = 'cl_rate_' . $pluginHash . '_' . $minuteBucket;
+assertTest('RateLimiter: transient storage not populated synchronously during request', !isset($GLOBALS['mock_transients'][$rateKey]));
+RateLimiter::syncTransients();
+assertTest('RateLimiter: transient synchronized on shutdown with count 2', ($GLOBALS['mock_transients'][$rateKey] ?? 0) === 2);
 
 echo PHP_EOL . "=== Test Results: {$passed} Passed, {$failed} Failed ===" . PHP_EOL . PHP_EOL;
 

@@ -1,15 +1,15 @@
 === Fardara Central Logger ===
 Contributors: fardara
 Donate link: https://fardara.com
-Tags: logging, central-logger, developer-tools, debug, monitoring
+Tags: logging, logger, developer, error-log, debug, centralized-logging, rest-api, monitoring, pii-anonymizer, audit-trail
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A standalone, high-performance central logging backend for WordPress plugins with structured context, severity thresholds, and PII anonymization.
+A high-performance centralized logging engine for WordPress plugins suite with structured context, severity thresholding, category toggling, rate limiting, and PII anonymization.
 
 == Description ==
 
@@ -129,6 +129,11 @@ Client plugins can use `function_exists('central_logger_log')` or `class_exists(
 Navigate to **Fardara Central Logger** under the Tools menu in the admin dashboard, apply any desired filters, and click **Export CSV** or **Export JSON**.
 
 == Changelog ==
+
+= 1.0.2 =
+* High-throughput performance optimizations: in-memory request log buffering with single bulk INSERT on request shutdown.
+* Deferred rate limiter transient synchronization to protect wp_options from concurrency lock contention.
+* Transient caching for distinct plugin slugs in admin dashboard.
 
 = 1.0.1 =
 * Removed orphan transient operations and cleaned up dead code.

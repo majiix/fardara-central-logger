@@ -261,15 +261,26 @@ class LogListTable extends \WP_List_Table
     /**
      * Retrieve distinct plugin slugs logged in the database.
      *
+     * Cached via transients to prevent full table/index scans on high-traffic sites.
+     *
      * @return string[]
      */
     private function getDistinctPlugins(): array
     {
+        $cacheKey = 'cl_distinct_source_plugins';
+        $cached = get_transient($cacheKey);
+        if (is_array($cached)) {
+            return $cached;
+        }
+
         global $wpdb;
         $table = Installer::getTableName();
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $results = $wpdb->get_col("SELECT DISTINCT source_plugin FROM {$table} WHERE source_plugin != '' ORDER BY source_plugin ASC");
-        return is_array($results) ? $results : [];
+        $slugs = is_array($results) ? $results : [];
+
+        set_transient($cacheKey, $slugs, HOUR_IN_SECONDS);
+        return $slugs;
     }
 
     /**

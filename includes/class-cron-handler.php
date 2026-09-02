@@ -109,6 +109,9 @@ final class CronHandler
         global $wpdb;
         $table = Installer::getTableName();
 
+        // Invalidate distinct plugins transient cache
+        delete_transient('cl_distinct_source_plugins');
+
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $deleted = $wpdb->query("TRUNCATE TABLE {$table}");
         return (int) $deleted;

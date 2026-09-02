@@ -3,7 +3,7 @@
  * Plugin Name: Fardara Central Logger
  * Plugin URI: https://fardara.ir
  * Description: High-performance standalone centralized logging backend for WordPress plugins suite with structured context, severity thresholds, category toggling, rate limiting, and PII anonymization.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 7.0
  * Requires PHP: 8.1
  * Author: micromax
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Plugin Constants
-define('CENTRAL_LOGGER_VERSION', '1.0.1');
+define('CENTRAL_LOGGER_VERSION', '1.0.2');
 define('CENTRAL_LOGGER_FILE', __FILE__);
 define('CENTRAL_LOGGER_PATH', plugin_dir_path(__FILE__));
 define('CENTRAL_LOGGER_URL', plugin_dir_url(__FILE__));

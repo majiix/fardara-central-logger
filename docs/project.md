@@ -21,14 +21,15 @@ Fardara Central Logger is a standalone WordPress plugin that serves as a central
 - **`includes/class-log-category.php`**: Registry and metadata for 8 standard categories (`system`, `admin`, `user_action`, `guest_action`, `auth`, `security`, `integration`, `performance`).
 - **`includes/class-installer.php`**: Database table installer with indexes on `timestamp`, `source_plugin`, `level`, `category`, and `user_id`.
 - **`includes/class-privacy.php`**: Context scrubber for IPv4/IPv6 masking, email anonymization, and sensitive credential key redaction.
-- **`includes/class-rate-limiter.php`**: Transient-backed sliding window rate limiter with suppressed log count summaries.
-- **`includes/class-cron-handler.php`**: Scheduled daily log rotation and pruning.
+- **`includes/class-rate-limiter.php`**: In-memory sliding window rate limiter with deferred transient synchronization on request shutdown.
+- **`includes/class-log-manager.php`**: Core engine with in-memory log buffering, auto-flush thresholds, and single multi-row bulk insert on request shutdown.
+- **`includes/class-cron-handler.php`**: Scheduled daily log rotation, batch pruning, and cache invalidation.
 - **`includes/class-exporter.php`**: Streaming CSV and JSON exporter supporting all list table filters.
 - **`includes/class-github-updater.php`**: Native GitHub updater engine for manual updates from the public repository main branch.
 - **`includes/class-logger.php`**: PSR-3 style object-oriented logger scoped to individual plugin slugs.
 - **`includes/api.php`**: Procedural global API helpers (`central_logger_log()`, `central_logger_should_log()`).
 - **`includes/Admin/class-admin-controller.php`**: Admin menu router under Tools (`tools.php?page=central-logger`), modal viewer, and action dispatcher.
-- **`includes/Admin/class-log-list-table.php`**: Custom `WP_List_Table` implementation.
+- **`includes/Admin/class-log-list-table.php`**: Custom `WP_List_Table` implementation with transient-cached distinct plugin filters and batch user cache priming.
 - **`includes/Admin/class-settings.php`**: Settings API handler and per-plugin overrides manager.
 - **`uninstall.php`**: Cleanup handler on plugin deletion.
 
@@ -37,21 +38,26 @@ Fardara Central Logger is a standalone WordPress plugin that serves as a central
    - `central_logger_log($source_plugin, $level, $message, $context = [], $category = 'system'): bool`
    - `central_logger_should_log($source_plugin, $level, $category = 'system'): bool`
    - `new \CentralLogger\Logger(string $sourcePlugin, string $defaultCategory = 'system')`
-2. **Server-Side Scope Enforcement**:
+2. **High-Throughput Performance Engine**:
+   - Non-blocking in-memory log buffering during request execution.
+   - Single multi-row bulk `INSERT` query executed on `shutdown` hook.
+   - Request-level in-memory rate limit tracking with deferred `wp_options` transient synchronization.
+   - Cached distinct plugin dropdowns in admin dashboard to prevent table/index scan overhead on large datasets.
+3. **Server-Side Scope Enforcement**:
    - Severity thresholds (`debug`, `info`, `warning`, `error`, `critical`, `disabled`).
    - Category toggling across 8 standard categories.
    - Per-plugin override rules.
-3. **Data Security & Privacy**:
+4. **Data Security & Privacy**:
    - Automatic masking of IPs, emails, credit cards, and sensitive context keys.
-4. **Flood Protection**:
+5. **Flood Protection**:
    - Rate limiting per source plugin with summary warning entries for suppressed logs.
-5. **Log Rotation**:
+6. **Log Rotation**:
    - Automated daily WP-Cron pruning with configurable retention period.
-6. **Admin Dashboard**:
+7. **Admin Dashboard**:
    - Filter by source plugin, severity level, category, date range, and free-text search.
    - Modal drawer to inspect and copy structured JSON context.
    - Direct CSV and JSON exports.
-7. **Native GitHub Updater**:
+8. **Native GitHub Updater**:
    - Manual one-click update directly from the public GitHub repository (`main` branch) from the settings page or plugins list.
 
 ## 5. Verification Commands
