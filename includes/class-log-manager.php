@@ -352,6 +352,8 @@ final class LogManager
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $wpdb->query($wpdb->prepare($query, ...$values));
+
+        delete_transient('cl_distinct_source_plugins');
     }
 
     /**
